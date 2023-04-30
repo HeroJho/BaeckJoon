@@ -1,101 +1,82 @@
-#include<iostream>
-#include<vector>
-#include<list>
+#include <iostream>
+#include <vector>
+#include <list>
+#include <algorithm>
 
 using namespace std;
 
 struct Pos
 {
-    int x, y;
-    Pos() :x(0), y(0) {};
-    Pos(int X, int Y) { x = X; y = Y; }
+	int x, y;
+	Pos():x(0), y(0) {};
+	Pos(int X, int Y) { x = X; y = Y; }
 };
 
-int X, Y;
+int Dx[4] = { 0, 0, -1, 1 };
+int Dy[4] = { 1, -1, 0, 0 };
+
 int Matrix[1001][1001] = { 0 };
-list<Pos> q;
-vector<Pos> Starts;
+list<Pos> Q;
+int X, Y;
+
+bool isIn(int x, int y)
+{
+	return x >= 0 && x < X && y >= 0 && y < Y;
+}
 
 void BFS()
 {
+	while (!Q.empty())
+	{
+		Pos Cur = Q.front(); Q.pop_front();
+		
+		for (int i = 0; i < 4; ++i)
+		{
+			int nX = Cur.x + Dx[i];
+			int nY = Cur.y + Dy[i];
 
-    for (int i = 0; i < Starts.size(); ++i)
-    {
-        q.push_back(Starts[i]);
-    }
-
-    while (!q.empty())
-    {
-        Pos Cur = q.front(); q.pop_front();
-        Pos Temp;
-
-        bool isIn = Cur.x >= 0 && Cur.x < X && Cur.y + 1 >= 0 && Cur.y + 1 < Y;
-        if (isIn && Matrix[Cur.x][Cur.y + 1] == 0)
-        {
-            Matrix[Cur.x][Cur.y + 1] = Matrix[Cur.x][Cur.y] + 1;
-            Temp = Cur;
-            Temp.y += 1;
-            q.push_back(Temp);
-        }
-        isIn = Cur.x >= 0 && Cur.x < X && Cur.y - 1 >= 0 && Cur.y - 1 < Y;
-        if (isIn && Matrix[Cur.x][Cur.y - 1] == 0)
-        {
-            Matrix[Cur.x][Cur.y - 1] = Matrix[Cur.x][Cur.y] + 1;
-            Temp = Cur;
-            Temp.y -= 1;
-            q.push_back(Temp);
-        }
-        isIn = Cur.x - 1 >= 0 && Cur.x - 1 < X && Cur.y >= 0 && Cur.y < Y;
-        if (isIn && Matrix[Cur.x - 1][Cur.y] == 0)
-        {
-            Matrix[Cur.x - 1][Cur.y] = Matrix[Cur.x][Cur.y] + 1;
-            Temp = Cur;
-            Temp.x -= 1;
-            q.push_back(Temp);
-        }
-        isIn = Cur.x + 1 >= 0 && Cur.x + 1 < X && Cur.y >= 0 && Cur.y < Y;
-        if (isIn && Matrix[Cur.x + 1][Cur.y] == 0)
-        {
-            Matrix[Cur.x + 1][Cur.y] = Matrix[Cur.x][Cur.y] + 1;
-            Temp = Cur;
-            Temp.x += 1;
-            q.push_back(Temp);
-        }
-    }
-
+			if (isIn(nX, nY) && Matrix[nY][nX] == 0)
+			{
+				Matrix[nY][nX] = Matrix[Cur.y][Cur.x] + 1;
+				Q.push_back(Pos(nX, nY));
+			}
+		}
+	}
 }
 
 int main()
 {
-    cin >> X >> Y;
-    for (int i = 0; i < Y; ++i)
-    {
-        for (int j = 0; j < X; ++j)
-        {
-            cin >> Matrix[j][i];
-            if (Matrix[j][i] == 1)
-                Starts.push_back(Pos(j, i));
-        }
-    }
+	cin >> X >> Y;
+	
+	for (int y = 0; y < Y; ++y)
+	{
+		for (int x = 0; x < X; ++x)
+		{
+			cin >> Matrix[y][x];
+			if (Matrix[y][x] == 1)
+				Q.push_back(Pos(x, y));
+		}
+	}
+	
+	BFS();
 
-    BFS();
+	int MaxDepth = 0;
+	for (int y = 0; y < Y; ++y)
+	{
+		for (int x = 0; x < X; ++x)
+		{
+			if (Matrix[y][x] == 0)
+			{
+				cout << -1;
+				return 0;
+			}
 
-    int iDepth = 0;
-    for (int i = 0; i < Y; ++i)
-    {
-        for (int j = 0; j < X; ++j)
-        {
-            if (Matrix[j][i] == 0)
-            {
-                cout << -1;
-                return 0;
-            }
-            if (iDepth < Matrix[j][i])
-                iDepth = Matrix[j][i];
-        }
-    }
+			if (MaxDepth < Matrix[y][x])
+				MaxDepth = Matrix[y][x];
+		}
+	}
 
-    cout << --iDepth;
+	cout << --MaxDepth;
 
-    return 0;
+	return 0;
 }
