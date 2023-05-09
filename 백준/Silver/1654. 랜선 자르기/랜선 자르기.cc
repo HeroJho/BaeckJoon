@@ -1,52 +1,49 @@
 #include <iostream>
-#include <string>
-#include <algorithm>
 #include <vector>
 
 using namespace std;
 
 int main()
 {
-	int iN, iM;
-	cin >> iN >> iM;
-
+	int iK, iN;
+	cin >> iK >> iN;
 	vector<int> iNums;
 	int iMax = 0;
-	for (int i = 0; i < iN; ++i)
+	for (int i = 0; i < iK; ++i)
 	{
 		int iTemp = 0; cin >> iTemp;
 		iNums.push_back(iTemp);
-		iMax = max(iTemp, iMax);
+		iMax = max(iMax, iTemp);
 	}
 
-
-	unsigned int iLeft = 1;
-	unsigned int iRight = iMax;
-	int iMaxLength = 0;
+	long long iLeft = 1;
+	long long iRight = iMax;
+	long long iMid = (iLeft + iRight) / 2;
+	long long iAns = 0;
 	while (iLeft <= iRight)
 	{
-		int iMid = (iLeft + iRight) / 2;
+		iMid = (iLeft + iRight) / 2;
 
-		unsigned int iCount = 0;
-		for (int i = 0; i < iN; ++i)
+		long long iLineNum = 0;
+		for (int i = 0; i < iNums.size(); ++i)
 		{
-			iCount += iNums[i] / iMid;
+			iLineNum += iNums[i] / iMid;
 		}
 
-		if (iCount >= iM)
-		{ // 자를 길이를 늘린다
+		if (iLineNum >= iN)
+		{
 			iLeft = iMid + 1;
-
-			iMaxLength = max(iMaxLength, iMid);
+			
+			iAns = max(iAns, iMid);
 		}
-		else if (iCount < iM)
-		{ // 자를 길이를 줄인다
+		else if (iLineNum < iN)
+		{
 			iRight = iMid - 1;
 		}
+		
 	}
 
-	cout << iMaxLength;
-
+	cout << iAns;
 
 	return 0;
 }
