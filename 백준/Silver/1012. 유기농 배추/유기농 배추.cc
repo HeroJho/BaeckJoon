@@ -1,68 +1,79 @@
-#include<iostream>
-#include<vector>
-#include<algorithm>
+#include <iostream>
+#include <vector>
+#include <list>
+#include <string>
+#include <algorithm>
 
 using namespace std;
 
-int Matrix[51][51];
-bool Visited[51][51];
+// DFS, 인접 행렬
+// DFS를 모두 순회하며 카운트
 
-int T, M, N, K;
-
-void Clear()
+struct tagPos
 {
-	for (int i = 0; i < 51; ++i)
+	int m_iX = 0;
+	int	m_iY = 0;
+
+	tagPos() {};
+	tagPos(int iX, int iY) : m_iX(iX), m_iY(iY) {}
+};
+
+int m_iDirX[4] = { 0, 0, -1, 1 };
+int m_iDirY[4] = { -1, 1, 0, 0 };
+
+int g_iX, g_iY;
+int g_iN;
+
+int g_iMatrix[50][50] = { 0 };
+bool g_bVisited[50][50] = { false };
+
+bool isIn(int iX, int iY)
+{
+	return iX >= 0 && iX < g_iX&& iY >= 0 && iY < g_iY;
+}
+
+void Reset()
+{
+	for (int y = 0; y < g_iY; ++y)
 	{
-		for (int j = 0; j < 51; ++j)
+		for (int x = 0; x < g_iX; ++x)
 		{
-			Matrix[i][j] = 0;
-			Visited[i][j] = false;
+			g_iMatrix[y][x] = 0;
+			g_bVisited[y][x] = false;
 		}
 	}
 }
 
-int DFS(int x, int y, int iCount)
+void DFS(tagPos Pos)
 {
-	Visited[x][y] = true;
+	g_bVisited[Pos.m_iY][Pos.m_iX] = true;
 
-	// 상하좌우
-	bool bRange = ((x >= 0 && x < M) && (y + 1 >= 0 && y + 1 < N));
-	if (bRange && Matrix[x][y + 1] == 1 && Visited[x][y + 1] == false)
+	for (int i = 0; i < 4; ++i)
 	{
-		iCount += DFS(x, y + 1, ++iCount);
-	}
-	bRange = ((x >= 0 && x < M) && (y - 1 >= 0 && y - 1 < N));
-	if (bRange && Matrix[x][y - 1] == 1 && Visited[x][y - 1] == false)
-	{
-		iCount += DFS(x, y - 1, ++iCount);
-	}
-	bRange = ((x + 1 >= 0 && x + 1 < M) && (y >= 0 && y < N));
-	if (bRange && Matrix[x + 1][y] == 1 && Visited[x + 1][y] == false)
-	{
-		iCount += DFS(x + 1, y, ++iCount);
-	}
-	bRange = ((x - 1 >= 0 && x - 1 < M) && (y >= 0 && y < N));
-	if (bRange && Matrix[x - 1][y] == 1 && Visited[x - 1][y] == false)
-	{
-		iCount += DFS(x - 1, y, ++iCount);
-	}
+		int inDirX = Pos.m_iX + m_iDirX[i];
+		int inDirY = Pos.m_iY + m_iDirY[i];
 
-	return iCount;
+		if (isIn(inDirX, inDirY) && g_iMatrix[inDirY][inDirX] && !g_bVisited[inDirY][inDirX])
+		{
+			DFS(tagPos(inDirX, inDirY));
+		}
+	}
 }
 
-int DFS_All()
+int Iter_DFS()
 {
 	int iCount = 0;
-	for (int i = 0; i < M; ++i)
+
+	for (int y = 0; y < g_iY; ++y)
 	{
-		for (int j = 0; j < N; ++j)
+		for (int x = 0; x < g_iX; ++x)
 		{
-			if (Matrix[i][j] == 1 && Visited[i][j] == false)
+			if (g_iMatrix[y][x] && !g_bVisited[y][x])
 			{
-				int iiCount = 0;
+				DFS(tagPos(x, y));
 				++iCount;
-				iiCount = DFS(i, j, iiCount);
 			}
+
 		}
 	}
 
@@ -71,26 +82,34 @@ int DFS_All()
 
 int main()
 {
-	cin >> T;
-	vector<int> Answer;
-	for (int t = 0; t < T; ++t)
-	{
-		Clear();
-		cin >> M >> N >> K;
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
 
-		for (int i = 0; i < K; ++i)
+	int iT; cin >> iT;
+	vector<int> iAnss;
+
+	for (int t = 0; t < iT; ++t)
+	{
+		Reset();
+		cin >> g_iX >> g_iY >> g_iN;
+
+		for (int i = 0; i < g_iN; ++i)
 		{
-			int X, Y; cin >> X >> Y;
-			Matrix[X][Y] = 1;
+			int iX, iY;
+			cin >> iX >> iY;
+			g_iMatrix[iY][iX] = 1;
 		}
 
-		Answer.push_back(DFS_All());
+		int iCount = Iter_DFS();
+		iAnss.push_back(iCount);
 	}
 
-	for (int i = 0; i < Answer.size(); ++i)
+
+	for (int i = 0; i < iAnss.size(); ++i)
 	{
-		cout << Answer[i] << endl;
+		cout << iAnss[i] << '\n';
 	}
+
 
 	return 0;
 }
