@@ -16,7 +16,8 @@ int main()
 	int iT;
 	cin >> iT;
 	vector<int> iAnss;
-	for (int t = 0; t < iT; ++t)
+	++iT;;
+	while(--iT)
 	{
 		int iN;
 		cin >> iN;
