@@ -43,7 +43,7 @@ int main()
 			sMBTI.push_back(sTemp);
 		}
 
-		if (16*16 < iN)
+		if (32 < iN)
 		{
 			iAnss.push_back(0);
 			continue;
