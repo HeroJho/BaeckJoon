@@ -1,38 +1,77 @@
-#include <stdio.h>
-#include <string.h>
+#include <iostream>
+#include <vector>
+#include <list>
+#include <string>
+#include <algorithm>
+#include "limits.h"
 
-int check(char str1[], char str2[]) {
-	int i, n=0;
-	for (i = 0; i < 4; i++) {
-		if (str1[i] != str2[i]) n++;
+using namespace std;
+
+int Sum(const string& sL, const string& sR)
+{
+	int iCount = 0;
+	for (int i = 0; i < 4; ++i)
+	{
+		if (sL[i] != sR[i])
+		{
+			++iCount;
+		}
 	}
-	return n;
+
+	return iCount;
 }
 
-int main() {
-	int T, N, i, j, k, min = 987654321, tmp = 0;
-	char str[100001][4] = { 0 };
-	scanf("%d", &T);
-	while (T--) {
-		scanf("%d", &N);
-		for (i = 0; i < N; i++) {
-			scanf("%s", str[i]);
+int main()
+{
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+
+	int iT;
+	cin >> iT;
+
+	vector<int> iAnss;
+	while (iT--)
+	{
+		int iN;
+		cin >> iN;
+
+		vector<string> sMBTI;
+		for (int i = 0; i < iN; ++i)
+		{
+			string sTemp;
+			cin >> sTemp;
+			sMBTI.push_back(sTemp);
 		}
-		for (i = 0; i < N; i++) {
-			for (j = i + 1; j < N; j++) {
-				for (k = j + 1; k < N; k++) {
-					tmp += check(str[i], str[j]);
-					tmp += check(str[j], str[k]);
-					tmp += check(str[i], str[k]);
-					min = min < tmp ? min : tmp;
-					tmp = 0;
-					if (min == 0) break;
+
+		if (16*16 < iN)
+		{
+			iAnss.push_back(0);
+			continue;
+		}
+
+		int iMin = INT_MAX;
+		int iSum = 0;
+		for (int i = 0; i < iN; ++i)
+		{
+			for (int j = i + 1; j < iN; ++j)
+			{
+				for (int k = j + 1; k < iN; ++k)
+				{
+					iSum = 0;
+					iSum += Sum(sMBTI[i], sMBTI[j]);
+					iSum += Sum(sMBTI[i], sMBTI[k]);
+					iSum += Sum(sMBTI[j], sMBTI[k]);
+
+					iMin = min(iMin, iSum);
 				}
-				if (min == 0) break;
 			}
-			if (min == 0) break;
 		}
-		printf("%d\n", min);
-		min = 987654321;
+
+		iAnss.push_back(iMin);
 	}
+
+	for (auto iAns : iAnss)
+		cout << iAns << '\n';
+
+	return 0;
 }
