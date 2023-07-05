@@ -19,15 +19,13 @@ struct Node
 int g_iN;
 int g_iAns = 0;
 vector<list<Node>> g_Matrix(100001);
-bool g_bVisited[100001] = { false };
 int g_iMaxNodeDis[100001] = { 0 };
 
 void Reset()
 {
 	for (int i = 0; i <= g_iN; ++i)
 	{
-		g_bVisited[i] = false;
-		g_iMaxNodeDis[i] = 0;
+		g_iMaxNodeDis[i] = -1;
 	}
 }
 
@@ -35,7 +33,7 @@ int BFS(int iStartNode)
 {
 	queue<Node> iQs;
 	iQs.push(Node(iStartNode, 0));
-	g_bVisited[iStartNode] = true;
+	g_iMaxNodeDis[iStartNode] = 0;
 
 	int iMaxNode = 0;
 
@@ -46,15 +44,14 @@ int BFS(int iStartNode)
 
 		for (auto NextNode : g_Matrix[CurNode.iNum])
 		{
-			if (g_bVisited[NextNode.iNum] == false)
+			if (g_iMaxNodeDis[NextNode.iNum] == -1)
 			{
 				int iTDis = CurNode.iDis + NextNode.iDis;
 
-				if (g_iMaxNodeDis[NextNode.iNum] > iTDis)
-					continue;
+	/*			if (g_iMaxNodeDis[NextNode.iNum] > iTDis)
+					continue;*/
 				g_iMaxNodeDis[NextNode.iNum] = iTDis;
 
-				g_bVisited[NextNode.iNum] = true;
 				iQs.push(Node(NextNode.iNum, iTDis));
 
 				if (g_iAns < iTDis)
@@ -98,6 +95,7 @@ int main()
 	}
 
 
+	Reset();
 	int iNode = BFS(1); // 임의의 정점 x = 1
 	Reset();
 	BFS(iNode); // 정점 y
