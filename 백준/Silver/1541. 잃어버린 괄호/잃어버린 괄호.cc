@@ -1,77 +1,63 @@
-#include<iostream>
-#include<vector>
-#include<string>
+#include <iostream>
+#include <vector>
+#include <list>
+#include <string>
+#include <algorithm>
+
 using namespace std;
 
 int main()
 {
-    string N;
-    cin >> N;
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
 
-    int iTotalSum = 0;
-    string sPrePo = "+";
-    bool bM = false;
-    string sTemp;
-    for (int i = 0; i < N.size(); ++i)
-    {
-        // 숫자
-        if ('-' != N[i] && '+' != N[i])
-        {
-            sTemp += N[i];
-        }
-        else
-        {
-            int iNum = stoi(sTemp);
-            sTemp = "";
+	string sInput;
+	cin >> sInput;
 
-            // 시작이 - 이면 그 뒤로 나오는 모든 +를 -로 바꿀 수 있다.
+	string sTemp = "";
+	int iAns = 0;
+	int iSum = 0;
+	bool bMinus = false;
+	for (int i = 0; i < sInput.length(); ++i)
+	{
+		sTemp += sInput[i];
+
+		if (sInput[i] == '-')
+		{
+			int iNum = stoi(sTemp);
+			sTemp = "";
+
+			if (!bMinus)
+			{
+				iAns += iNum;
+				bMinus = true;
+			}
+			else
+			{
+				iSum += iNum;
+			}
+		}
+		else if (sInput[i] == '+')
+		{
+			int iNum = stoi(sTemp);
+			sTemp = "";
+			if (bMinus)
+				iSum += iNum;
+			else
+				iAns += iNum;
+		}
+	}
+
+	int iNum = stoi(sTemp);
+	sTemp = "";
+	if (bMinus)
+		iSum += iNum;
+	else
+		iAns += iNum;
+
+	iAns -= iSum;
+	cout << iAns;
 
 
-
-            if ("-" == sPrePo)
-            {
-                // 뺀다
-                iTotalSum -= iNum;
-            }
-            else if("+" == sPrePo)
-            {
-                // 더한다
-                if (bM)
-                    iTotalSum -= iNum;
-                else
-                    iTotalSum += iNum;
-            }
-
-            if ("-" == sPrePo && '+' == N[i])
-            {
-                bM = true;
-            }
-            else if ("+" == sPrePo && '-' == N[i])
-            {
-                bM = false;
-            }
-            sPrePo = N[i];
-        }
-    }
-
-
-    int iNum = stoi(sTemp);
-
-    if ("-" == sPrePo)
-    {
-        // 뺀다
-        iTotalSum -= iNum;
-    }
-    else if ("+" == sPrePo)
-    {
-        // 더한다
-        if (bM)
-            iTotalSum -= iNum;
-        else
-            iTotalSum += iNum;
-    }
-
-    cout << iTotalSum << endl;
-
-    return 0;
+	return 0;
 }
