@@ -1,37 +1,46 @@
-#include<iostream>
-#include<vector>
-#include<algorithm>
+#include <iostream>
+#include <vector>
+#include <list>
+#include <string>
+#include <algorithm>
+
 using namespace std;
 
 int main()
 {
-    int N = 0;
-    cin >> N;
-    vector<int> A;
-    for(int i = 0; i < N; ++i)
-    {
-        int iTemp = 0;
-        cin >> iTemp;
-        A.push_back(iTemp);
-    }
-    vector<int> B;
-    for(int i = 0; i < N; ++i)
-    {
-        int iTemp = 0;
-        cin >> iTemp;
-        B.push_back(iTemp);
-    }
-    
-    sort(A.begin(), A.end()); // 오름차순
-    sort(B.rbegin(), B.rend()); // 내림차순
-    
-    int iSum = 0;
-    for(int i = 0; i < N; ++i)
-    {
-        iSum += A[i] * B[i];
-    }
-    
-    cout << iSum << endl;
-    
-    return 0;
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+
+	int iN;
+	cin >> iN;
+
+	vector<int> iAs;
+	vector<int> iBs;
+
+	for (int i = 0; i < iN; ++i)
+	{
+		int iTemp;
+		cin >> iTemp;
+		iAs.push_back(iTemp);
+	}
+	for (int i = 0; i < iN; ++i)
+	{
+		int iTemp;
+		cin >> iTemp;
+		iBs.push_back(iTemp);
+	}
+
+	sort(iAs.begin(), iAs.end());
+	sort(iBs.rbegin(), iBs.rend());
+
+	int iAns = 0;
+	for (int i = 0; i < iN; ++i)
+	{
+		iAns += iAs[i] * iBs[i];
+	}
+	
+	cout << iAns;
+
+
+	return 0;
 }
