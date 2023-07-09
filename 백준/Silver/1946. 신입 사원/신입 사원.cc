@@ -1,65 +1,55 @@
-#include<iostream>
-#include<vector>
-#include<algorithm>
+#include <iostream>
+#include <vector>
+#include <list>
+#include <string>
+#include <algorithm>
+#include <map>
 
 using namespace std;
 
-vector<int> iRes;
-
-struct Data
-{
-    int iA = 0;
-    int iB = 0;
-    int iCount = 0;
-};
-
-bool Fuc(Data A, Data B)
-{
-    return A.iA < B.iA;
-}
-
-void Cal()
-{
-    int iCount = 0; cin >> iCount;
-    vector<Data> Ds;
-    for (int i = 0; i < iCount; ++i)
-    {
-        Data D; cin >> D.iA; cin >> D.iB;
-        Ds.push_back(D);
-    }
-
-    sort(Ds.begin(), Ds.end(), Fuc);
-
-    int iDe = 0;
-    int iI = 0;
-    for (int i = 1; i < Ds.size(); ++i)
-    {
-        if (Ds[iI].iB < Ds[i].iB)
-        {
-            ++iDe;
-        }
-        else
-        {
-            iI = i;
-        }
-    }
-
-    iRes.push_back(Ds.size() - iDe);
-}
-
 int main()
 {
-    int iTCount = 0; cin >> iTCount;
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
 
-    for (int i = 0; i < iTCount; ++i)
-    {
-        Cal();
-    }
+	int iT;
+	cin >> iT;
 
-    for (int i = 0; i < iRes.size(); ++i)
-    {
-        cout << iRes[i] << endl;
-    }
+	vector<int> iAnss;
+	while (iT)
+	{
+		--iT;
 
-    return 0;
+		int iN;
+		cin >> iN;
+		map<int, int> iNums;
+		for (int i = 0; i < iN; ++i)
+		{
+			int iTemp1, iTemp2;
+			cin >> iTemp1 >> iTemp2;
+			iNums.emplace(iTemp1, iTemp2);
+		}
+
+		int iCount = 1;
+		int iMin = iNums[1];
+		for (int i = 2; i <= iN; ++i)
+		{
+			if (iMin < iNums[i])
+			{
+				continue;
+			}
+
+			iMin = iNums[i];
+			++iCount;
+		}
+
+		iAnss.push_back(iCount);
+	}
+
+	for (auto iAns : iAnss)
+	{
+		cout << iAns << '\n';
+	}
+
+	return 0;
 }
