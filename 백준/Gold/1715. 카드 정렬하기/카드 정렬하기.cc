@@ -1,48 +1,62 @@
-#include<iostream>
-#include<vector>
-#include<algorithm>
-#include<string>
-#include<queue>
+#include <iostream>
+#include <vector>
+#include <list>
+#include <string>
+#include <algorithm>
+#include <queue>
+
 using namespace std;
 
+class Fuc
+{
+public:
+	bool operator()(int iL, int iR)
+	{
+		return iL > iR;
+	}
+};
 
 int main()
 {
-    int N = 0; cin >> N;
-    priority_queue<int, vector<int>, greater<int>> pQ;
-    for (int i = 0; i < N; ++i)
-    {
-        int iTemp = 0; cin >> iTemp;
-        pQ.push(iTemp);
-    }
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
 
-    if (1 == pQ.size())
-    {
-        cout << 0;
-        return 0;
-    }
+	int iN;
+	cin >> iN;
+	priority_queue<int, vector<int>, Fuc> iNums;
+	for (int i = 0; i < iN; ++i)
+	{
+		int iTemp;
+		cin >> iTemp;
+		iNums.push(iTemp);
+	}
 
-    int iAns = 0;
-    while (1)
-    {
-        // 제일 작은 애들 2개를 뭉친다
-        int iNum1 = pQ.top(); pQ.pop();
+	if (iN == 1)
+	{
+		cout << 0;
+		return 0;
+	}
 
-        if (pQ.empty())
-        {
-            break;
-        }
 
-        int iNum2 = pQ.top(); pQ.pop();
-        iNum1 += iNum2;
-        iAns += iNum1;
+	int iSumNum = 0;
+	while (true)
+	{
+		// 제일 작은애 2개를 뽑고 더한다.
+		int iTemp1 = iNums.top();
+		iNums.pop();
+		int iTemp2 = iNums.top();
+		iNums.pop();
+		iSumNum += iTemp1 + iTemp2;
 
-        // 뭉친걸 넣는다.
-        pQ.push(iNum1);
+		if (iNums.empty())
+		{
+			break;
+		}
 
-    }
+		iNums.push(iTemp1 + iTemp2);
+	}
 
-    cout << iAns;
+	cout << iSumNum;
 
-    return 0;
+	return 0;
 }
