@@ -1,56 +1,46 @@
-#include<iostream>
-#include<vector>
-#include<algorithm>
-#include<string>
+#include <iostream>
+#include <vector>
+#include <list>
+#include <string>
+#include <algorithm>
+#include <queue>
 
 using namespace std;
 
+
 int main()
 {
-    string N; cin >> N;
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
 
-    int iCount_0 = 0;
-    int iCount_1 = 0;
-    char cTemp = N[0];
+	string sInput;
+	cin >> sInput;
 
-    if ('0' == N[0])
-    {
-        ++iCount_0;
-    }
-    else
-    {
-        ++iCount_1;
-    }
+	int iZero = 0;
+	int iOne = 0;
+	int iPreNum = -1;
+	for (int i = 0; i < sInput.length(); ++i)
+	{
+		if (iPreNum == sInput[i])
+		{
+			continue;
+		}
+		else
+		{
+			if (sInput[i] == '0')
+			{
+				++iZero;
+			}
+			else if(sInput[i] == '1')
+			{
+				++iOne;
+			}
 
-    for (int i = 1; i < N.length(); ++i)
-    {
-        if (cTemp != N[i])
-        {
-            if ('0' == N[i])
-            {
-                ++iCount_0;
-            }
-            else
-            {
-                ++iCount_1;
-            }
+			iPreNum = sInput[i];
+		}
+	}
 
-            cTemp = N[i];
-        }
-    }
+	cout << min(iZero, iOne);
 
-
-    if (iCount_0 < iCount_1)
-    {
-        cout << iCount_0;
-    }
-    else
-    {
-        cout << iCount_1;
-    }
-
-
-    
-
-    return 0;
+	return 0;
 }
