@@ -1,47 +1,44 @@
-#include<iostream>
-#include<vector>
-#include<algorithm>
-#include<string>
+#include <iostream>
+#include <vector>
+#include <list>
+#include <string>
+#include <algorithm>
+
 using namespace std;
 
 int main()
 {
-    long long A, B; cin >> A; cin >> B;
-    //   2 6
-    int iCount = 0;
-    while (A <= B)
-    {
-        if (A == B)
-        {
-            cout << iCount + 1;
-            return 0;
-        }
-        else if (0 == B % 2)
-        {    // 나눠지면 나눈다.
-            B /= 2;
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
 
-            ++iCount;
-        }
-        else
-        {    // 안 나눠지면 끝에서 1을 뺀다.
-            string sTemp = to_string(B);
+	long long iN, iM;
+	cin >> iN >> iM;
+	
+	long long iAns = 1;
+	while (iN < iM)
+	{
+		if (iM % 10 == 1)
+		{
+			iM /= 10;
+		}
+		else
+		{
+			if(iM % 2 == 0)
+				iM /= 2;
+			else
+			{
+				cout << -1;
+				return 0;
+			}
+		}
 
-            if ('1' != sTemp.back())
-            {
-                break;
-            }
+		++iAns;
+	}
 
-            sTemp.pop_back();
-            if (!sTemp.empty())
-                B = stoll(sTemp);
-            else
-                B = 0;
+	if (iM == iN)
+		cout << iAns;
+	else
+		cout << -1;
 
-            ++iCount;
-        }
-    }
-
-    cout << -1;
-
-    return 0;
+	return 0;
 }
