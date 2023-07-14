@@ -1,71 +1,89 @@
 #include <iostream>
 #include <vector>
+#include <list>
+#include <string>
+#include <algorithm>
 #include <queue>
- 
-#define pii pair<int, int>
- 
+#include "limits.h"
+
 using namespace std;
- 
- 
-int N, M, X;
-const int INF = 1e9+7;
-vector<pii > graph[1001]; 
-vector<int> dist;
-int resdist[1001];
- 
-void input(){
-    int u, v, t;
-    cin >> N >> M >> X;
-    for(int i = 0; i < M; i++){
-        cin >> u >> v >> t;
-        graph[u].push_back(make_pair(t, v));
-    }
+
+class Fuc
+{
+public:
+	bool operator()(pair<int, int> L, pair<int, int> R)
+	{
+		return L.second > R.second;
+	}
+};
+
+int g_iN, g_iM, g_iX;
+
+vector<pair<int, int>> g_Matrix[1001];
+vector<int> g_iDiss;
+vector<int> g_iMinDis(1001, 0);
+
+void Dij(int iStart)
+{
+	g_iDiss.clear();
+	g_iDiss.resize(1001, INT_MAX);
+
+	priority_queue < pair<int, int>, vector<pair<int, int>>, Fuc> Qs;
+	Qs.push({iStart, 0});
+
+	g_iDiss[iStart] = 0;
+
+	while (!Qs.empty())
+	{
+		pair<int, int> Cur = Qs.top();
+		Qs.pop();
+
+		//if (Cur.second > g_iDiss[Cur.first])
+		//	continue;
+
+		for (int i = 0; i < g_Matrix[Cur.first].size(); ++i)
+		{
+			int iNex = g_Matrix[Cur.first][i].first;
+			int iNexDis = Cur.second + g_Matrix[Cur.first][i].second;
+
+			if (iNexDis < g_iDiss[iNex])
+			{
+				g_iDiss[iNex] = iNexDis;
+				Qs.push({ iNex, iNexDis });
+			}
+
+		}
+	}
+
 }
- 
-void Dijstra(int S){
-    dist.clear();
-    dist.resize(N+1, INF);
-    
-    dist[S] = 0;
-    
-    priority_queue<pii, vector<pii >, greater<pii > > que;
-    que.push({0, S});
-    
-    while(!que.empty()){
-        int min_cost = que.top().first;
-        int now = que.top().second;
-        que.pop();
-        
-        if(min_cost > dist[now]) continue;
-        
-        for(int i = 0; i < graph[now].size(); i++){
-            int next = graph[now][i].second;
-            int next_cost = min_cost + graph[now][i].first;
-            
-            if(next_cost < dist[next]){
-                dist[next] = next_cost;
-                que.push({next_cost, next});
-            }
-        }
-    }
-}
- 
-int main(){
-    ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
-    input();
-    for(int i = 1; i <= N; i++){
-        Dijstra(i);
-        // i가 X로 가는 최단거리 half
-        resdist[i] = dist[X];
-    }
-    Dijstra(X);
-    int res = 0;
-    for(int i = 1; i <= N; i++){
-        resdist[i] += dist[i];
-        res = max(res, resdist[i]);
-    }
-    
-    cout << res;
-    
-    return 0;
+
+int main()
+{
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+
+	cin >> g_iN >> g_iM >> g_iX;
+	for (int i = 0; i < g_iM; ++i)
+	{
+		int iStart, iEnd, iDis;
+		cin >> iStart >> iEnd >> iDis;
+		g_Matrix[iStart].push_back({iEnd, iDis});
+	}
+
+	for (int i = 1; i <= g_iN; ++i)
+	{
+		Dij(i);
+		g_iMinDis[i] = g_iDiss[g_iX];
+	}
+
+	Dij(g_iX);
+	int iMaxDis = 0;
+	for (int i = 1; i <= g_iN; ++i)
+	{
+		iMaxDis = max(g_iMinDis[i] + g_iDiss[i], iMaxDis);
+	}
+
+	cout << iMaxDis;
+
+	return 0;
 }
