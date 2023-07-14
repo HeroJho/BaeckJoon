@@ -19,19 +19,19 @@ public:
 
 int g_iN, g_iM, g_iX;
 
-vector<pair<int, int>> g_Matrix[1001];
-vector<int> g_iDiss;
+vector<pair<int, int>> g_Matrix[1001][2];
+vector<int> g_iDiss[2];
 vector<int> g_iMinDis(1001, 0);
 
-void Dij(int iStart)
+void Dij(int iInv)
 {
-	g_iDiss.clear();
-	g_iDiss.resize(g_iN + 1, INT_MAX);
+	g_iDiss[iInv].clear();
+	g_iDiss[iInv].resize(g_iN + 1, INT_MAX);
 
 	priority_queue < pair<int, int>, vector<pair<int, int>>, Fuc> Qs;
-	Qs.push({iStart, 0});
+	Qs.push({g_iX, 0});
 
-	g_iDiss[iStart] = 0;
+	g_iDiss[iInv][g_iX] = 0;
 
 	while (!Qs.empty())
 	{
@@ -39,21 +39,20 @@ void Dij(int iStart)
 		Qs.pop();
 
 
-		for (int i = 0; i < g_Matrix[Cur.first].size(); ++i)
+		for (int i = 0; i < g_Matrix[Cur.first][iInv].size(); ++i)
 		{
-			int iNex = g_Matrix[Cur.first][i].first;
-			int iNexDis = Cur.second + g_Matrix[Cur.first][i].second;
+			int iNex = g_Matrix[Cur.first][iInv][i].first;
+			int iNexDis = Cur.second + g_Matrix[Cur.first][iInv][i].second;
 
-			if (iNexDis < g_iDiss[iNex])
+			if (iNexDis < g_iDiss[iInv][iNex])
 			{
-				g_iDiss[iNex] = iNexDis;
+				g_iDiss[iInv][iNex] = iNexDis;
 				Qs.push({ iNex, iNexDis });
 			}
 
 		}
 
 	}
-
 }
 
 int main()
@@ -66,20 +65,18 @@ int main()
 	{
 		int iStart, iEnd, iDis;
 		cin >> iStart >> iEnd >> iDis;
-		g_Matrix[iStart].push_back({iEnd, iDis});
+		g_Matrix[iStart][0].push_back({ iEnd, iDis });
+		g_Matrix[iEnd][1].push_back({iStart, iDis});
 	}
 
-	for (int i = 1; i <= g_iN; ++i)
-	{
-		Dij(i);
-		g_iMinDis[i] = g_iDiss[g_iX];
-	}
+	
+	Dij(1); // A -> X
+	Dij(0); // X -> A
 
-	Dij(g_iX);
 	int iMaxDis = 0;
 	for (int i = 1; i <= g_iN; ++i)
 	{
-		iMaxDis = max(g_iMinDis[i] + g_iDiss[i], iMaxDis);
+		iMaxDis = max(g_iDiss[0][i] + g_iDiss[1][i], iMaxDis);
 	}
 
 	cout << iMaxDis;
