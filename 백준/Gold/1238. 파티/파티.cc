@@ -26,7 +26,7 @@ vector<int> g_iMinDis(1001, 0);
 void Dij(int iStart)
 {
 	g_iDiss.clear();
-	g_iDiss.resize(1001, INT_MAX);
+	g_iDiss.resize(g_iN + 1, INT_MAX);
 
 	priority_queue < pair<int, int>, vector<pair<int, int>>, Fuc> Qs;
 	Qs.push({iStart, 0});
@@ -38,8 +38,6 @@ void Dij(int iStart)
 		pair<int, int> Cur = Qs.top();
 		Qs.pop();
 
-		//if (Cur.second > g_iDiss[Cur.first])
-		//	continue;
 
 		for (int i = 0; i < g_Matrix[Cur.first].size(); ++i)
 		{
@@ -53,6 +51,7 @@ void Dij(int iStart)
 			}
 
 		}
+
 	}
 
 }
