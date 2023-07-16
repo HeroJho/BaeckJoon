@@ -76,12 +76,7 @@ int main()
 	for (int i = 1; i <= g_iN; ++i)
 	{
 		if (g_iDiss[i] == INT_MAX)
-		{
-			if (i != iBegin)
-				cout << "INF" << '\n';
-			else
-				cout << 0 << '\n';
-		}
+			cout << "INF" << '\n';
 		else
 			cout << g_iDiss[i] << '\n';
 	}
