@@ -1,46 +1,59 @@
 #include <iostream>
 #include <vector>
+#include <list>
+#include <string>
+#include <algorithm>
 
 using namespace std;
 
-int main()
+long long Check(int iIndex, vector<int>& iNums)
 {
-	int iK, iN;
-	cin >> iK >> iN;
-	vector<int> iNums;
-	int iMax = 0;
-	for (int i = 0; i < iK; ++i)
+	long long iCount = 0;
+	for (int i = 0; i < iNums.size(); ++i)
 	{
-		int iTemp = 0; cin >> iTemp;
-		iNums.push_back(iTemp);
-		iMax = max(iMax, iTemp);
+		iCount += (iNums[i] / iIndex);
 	}
 
-	long long iLeft = 1;
-	long long iRight = iMax;
-	long long iMid = (iLeft + iRight) / 2;
-	long long iAns = 0;
+	return iCount;
+}
+
+int main()
+{
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+
+	int iN, iM;
+	cin >> iN >> iM;
+	vector<int> iNums;
+	int iMax = 0;
+	for (int i = 0; i < iN; ++i)
+	{
+		int iTemp;
+		cin >> iTemp;
+		iNums.push_back(iTemp);
+		if (iMax < iTemp)
+			iMax = iTemp;
+	}
+
+	long long iLeft = 1, iRight = iMax, iMiddle;
+	int iAns = 0;
 	while (iLeft <= iRight)
 	{
-		iMid = (iLeft + iRight) / 2;
+		iMiddle = (iLeft + iRight) / 2;
 
-		long long iLineNum = 0;
-		for (int i = 0; i < iNums.size(); ++i)
+		long long iCount = Check(iMiddle, iNums);
+
+		if (iCount >= iM)
 		{
-			iLineNum += iNums[i] / iMid;
+			iLeft = iMiddle + 1;
+
+			iAns = iMiddle;
+		}
+		else
+		{
+			iRight = iMiddle - 1;
 		}
 
-		if (iLineNum >= iN)
-		{
-			iLeft = iMid + 1;
-			
-			iAns = max(iAns, iMid);
-		}
-		else if (iLineNum < iN)
-		{
-			iRight = iMid - 1;
-		}
-		
 	}
 
 	cout << iAns;
