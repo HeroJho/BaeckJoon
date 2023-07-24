@@ -1,46 +1,82 @@
 #include <iostream>
-#include <vector>
-#include <list>
+#include <stack>
 #include <string>
-#include <algorithm>
-
 
 using namespace std;
+
+
 
 int main()
 {
 	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
 
-	int iN, iC;
-	string sNums;
-	cin >> iN >> iC;
-	cin >> sNums;
+	int iN, iCount;
+	cin >> iN >> iCount;
+	string sInput;
+	cin >> sInput;
 
-	vector<int> iStacks;
-	iStacks.push_back(sNums[0]);
-	// 1231234
-	// 32
-	for (int i = 1; i < sNums.size(); ++i)
+	stack<int> Qs;
+	// 2 1     21
+	for (int i = 0; i < iN; ++i)
 	{
-		while(!iStacks.empty() && iStacks.back() < sNums[i] && iC != 0)
+		int iNum = sInput[i] - '0';
+
+		if (iCount == 0)
 		{
-			iStacks.pop_back();
-			--iC;
+			Qs.push(iNum);
 		}
-		iStacks.push_back(sNums[i]);
+
+		while (iCount > 0)
+		{
+
+			if (!Qs.empty())
+			{
+				if (Qs.top() < iNum)
+				{
+					Qs.pop();
+					--iCount;
+
+					if (iCount == 0)
+					{
+						Qs.push(iNum);
+					}
+				}
+				else
+				{
+					Qs.push(iNum);
+					break;
+				}
+			}
+			else
+			{
+				Qs.push(iNum);
+				break;
+			}
+		}
 	}
 
-	
-	for (int i = 0; i < iC; ++i)
+	if (iCount > 0)
 	{
-		iStacks.pop_back();
+		for (int i = 0; i < iCount; ++i)
+		{
+			Qs.pop();
+		}
 	}
 
-	for (int i = 0; i < iStacks.size(); ++i)
+	int iSize = Qs.size();
+	stack<int> Ss;
+	for (int i = 0; i < iSize; ++i)
 	{
-		cout << iStacks[i] - '0';
+		Ss.push(Qs.top());
+		Qs.pop();
 	}
+	for (int i = 0; i < iSize; ++i)
+	{
+		cout << Ss.top();
+		Ss.pop();
+	}
+
 
 	return 0;
 }
