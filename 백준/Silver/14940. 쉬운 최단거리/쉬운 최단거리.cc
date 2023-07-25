@@ -1,114 +1,94 @@
 #include <iostream>
 #include <vector>
-#include <list>
+#include <array>
 #include <queue>
 
 using namespace std;
 
-struct Vec2D
+#define MAX 1000
+#define FOUR 4
+
+int n{ 0 }, m{ 0 };
+vector<vector<int>> vec;
+vector<vector<bool>> visited;
+queue<pair<int, int>> q;
+
+void BFS()
 {
-	int iX, iY;
-	Vec2D(int x, int y) :iX(x), iY(y) {}
-};
+	array<int, 4> dx{ 0,0,-1,1 };
+	array<int, 4> dy{ -1,1,0,0 };
 
-int g_iN, g_iM;
-int g_iMatrix[1000][1000] = { 0 };
-int g_iAnsMatrix[1000][1000] = { 0 };
-bool g_bVisited[1000][1000] = { false };
-
-int g_iDirX[4] = { 0 ,0, -1, 1 };
-int g_iDirY[4] = { 1 ,-1, 0, 0 };
-
-
-bool Check_Range(int iX, int iY)
-{
-	return iX >= 0 && iX < g_iN&& iY >= 0 && iY < g_iM;
-}
-
-void BFS(Vec2D StartPos)
-{
-	queue<Vec2D> iQs;
-	
-	iQs.push(StartPos);
-	g_iAnsMatrix[StartPos.iY][StartPos.iX] = 0;
-	g_bVisited[StartPos.iY][StartPos.iX] = true;
-
-	int iCount = 1;
-	while (!iQs.empty())
+	while (false == q.empty())
 	{
-		int iSize = iQs.size();
-	
-		for (int i = 0; i < iSize; ++i)
+		int x = q.front().second;
+		int y = q.front().first;
+		q.pop();
+
+		for (int i = 0; i < FOUR; i++)
 		{
-			Vec2D CurPos = iQs.front();
-			iQs.pop();
+			int nx = x + dx[i];
+			int ny = y + dy[i];
 
-			for (int i = 0; i < 4; ++i)
+			if (nx < 0 || nx >= m || ny < 0 || ny >= n)
 			{
-				int inX = CurPos.iX + g_iDirX[i];
-				int inY = CurPos.iY + g_iDirY[i];
-
-				if (Check_Range(inX, inY) && !g_bVisited[inY][inX] && g_iMatrix[inY][inX])
-				{
-					g_iAnsMatrix[inY][inX] = iCount;
-					g_bVisited[inY][inX] = true;
-					iQs.emplace(inX, inY);
-				}
-
+				continue;
 			}
-		}
-		
-		++iCount;
-	}
 
-}
-
-void Check_NoEnd()
-{
-	for (int y = 0; y < g_iM; ++y)
-	{
-		for (int x = 0; x < g_iN; ++x)
-		{
-			if (!g_bVisited[y][x] && g_iMatrix[y][x] == 1)
+			if (0 == vec[ny][nx])
 			{
-				g_iAnsMatrix[y][x] = -1;
+				continue;
+			}
+
+			if (false == visited[ny][nx])
+			{
+				vec[ny][nx] = vec[y][x] + 1;
+				visited[ny][nx] = true;
+				q.push({ ny, nx });
 			}
 		}
 	}
-}
 
+}
 
 int main()
 {
 	ios_base::sync_with_stdio(false);
-	cin.tie(NULL);
+	cin.tie(NULL);	cout.tie(NULL);
 
-	cin >> g_iM >> g_iN;
-	Vec2D StartPos(0, 0);
-	for (int y = 0; y < g_iM; ++y)
+	cin >> n >> m;
+
+	vec.resize(n, vector<int>(m, 0));
+	visited.resize(n, vector<bool>(m, false));
+
+	for (int i = 0; i < n; i++)
 	{
-		for (int x = 0; x < g_iN; ++x)
+		for (int j = 0; j < m; j++)
 		{
-			cin >> g_iMatrix[y][x];
+			cin >> vec[i][j];
 
-			if (2 == g_iMatrix[y][x])
+			if (2 == vec[i][j])
 			{
-				StartPos.iX = x;
-				StartPos.iY = y;
+				q.push({ i, j });
+				visited[i][j] = true;
+				vec[i][j] = 0;	// target 변수에 값을 저장해 두고, 목표지점을 0으로 시작해서 값이 증가하도록 한다.
 			}
 		}
 	}
 
-	BFS(StartPos);
-	Check_NoEnd();
+	BFS();
 
-	for (int y = 0; y < g_iM; ++y)
+	for (int i = 0; i < n; i++)
 	{
-		for (int x = 0; x < g_iN; ++x)
+		for (int j = 0; j < m; j++)
 		{
-			cout << g_iAnsMatrix[y][x] << ' ';
+			if (visited[i][j] == false && vec[i][j] == 1)
+			{
+				cout << -1 << " ";
+				continue;
+			}
+
+			cout << vec[i][j] << " ";
 		}
-		
 		cout << '\n';
 	}
 
