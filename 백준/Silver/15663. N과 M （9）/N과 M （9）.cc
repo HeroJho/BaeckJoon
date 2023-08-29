@@ -24,15 +24,15 @@ void DFS(int iDepth)
 		return;
 	}
 
-	bool Check[10001] = { false };
+	int iLast = -1;
 	for (int i = 0; i < g_iN; ++i)
 	{
 		if (g_Check[i])
 			continue;
 
-		if (Check[g_Inputs[i]])
+		if (iLast == g_Inputs[i])
 			continue;
-		Check[g_Inputs[i]] = true;
+		iLast = g_Inputs[i];
 
 		g_Check[i] = true;
 		g_Anss.push_back(g_Inputs[i]);
