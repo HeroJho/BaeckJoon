@@ -3,15 +3,17 @@
 #include <list>
 #include <string>
 #include <algorithm>
+#include <queue>
+#include "limits.h"
 
 using namespace std;
 
-class Func
+class Fuc
 {
 public:
 	bool operator()(pair<int, int> L, pair<int, int> R)
 	{
-		return L.first > R.first;
+		return L.second < R.second;
 	}
 };
 
@@ -20,49 +22,61 @@ int main()
 	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
 
-
 	int iN;
 	cin >> iN;
-
-	list<pair<int,int>> Inputs;
+	vector<pair<int, int>> Inputs;
 	for (int i = 0; i < iN; ++i)
 	{
-		int iA, iB;
-		cin >> iA >> iB;
-		Inputs.push_back({ iB, iA });
+		pair<int, int> Temp; cin >> Temp.second >> Temp.first;
+		Inputs.push_back(Temp);
 	}
 
-	Inputs.sort(Func());
+	sort(Inputs.rbegin(), Inputs.rend());
 
-	int iAns = 0;
+	priority_queue<pair<int, int>, vector<pair<int, int>>, Fuc> Qs;
 
-	int iMaxDay = Inputs.front().first;
-	for (int i = iMaxDay; i > 0; --i)
+	if (iN == 0)
 	{
-		int iMaxScore = 0;
-		list<pair<int, int>>::iterator MaxIter;
-		for (list<pair<int, int>>::iterator iter = Inputs.begin(); iter != Inputs.end(); ++iter)
+		cout << 0;
+		return 0;
+	}
+	int iCurDay = Inputs[0].first;
+	Qs.push(Inputs[0]);
+	long long iAns = 0;
+	for (int i = 1; i < iN; ++i)
+	{
+		if (iCurDay > Inputs[i].first)
 		{
-			if (i <= (*iter).first)
+			
+			for (int j = iCurDay; j > Inputs[i].first; --j)
 			{
-				if (iMaxScore < (*iter).second)
+				if (!Qs.empty())
 				{
-					iMaxScore = (*iter).second;
-					MaxIter = iter;
+					iAns += Qs.top().second;
+					Qs.pop();
 				}
 			}
-			else
-				break;
-		}
 
-		if (iMaxScore > 0)
+			iCurDay = Inputs[i].first;
+
+			Qs.push(Inputs[i]);
+		}
+		else
 		{
-			Inputs.erase(MaxIter);
-			iAns += iMaxScore;
+			Qs.push(Inputs[i]);
 		}
 
 	}
-	
+
+	for (int i = iCurDay; i >= 1; --i)
+	{
+		if (!Qs.empty())
+		{
+			iAns += Qs.top().second;
+			Qs.pop();
+		}
+	}
+
 	cout << iAns;
 
 	return 0;
