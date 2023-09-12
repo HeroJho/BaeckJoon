@@ -1,81 +1,93 @@
-#include <queue>
 #include <iostream>
+#include <vector>
+#include <list>
 #include <string>
-#include <cstring>
+#include <algorithm>
+#include <queue>
 
 using namespace std;
 
-int a, b;
-bool visited[10000];
+int g_iN, g_iM;
+bool g_Visited[10000] = { false };
 
-void bfs()
+void Reset()
 {
-    queue<pair<int, string>> q;
-    q.push(make_pair(a, ""));
-    visited[a] = true;
+	for (int i = 0; i < 10000; ++i)
+	{
+		g_Visited[i] = false;
+	}
+}
 
-    while (!q.empty())
-    {
-        int cur_num = q.front().first;
-        string cur_op = q.front().second;
-        q.pop();
+void BFS()
+{
+	queue<pair<int, string>> Qs;
+	Qs.push({ g_iN, ""});
+	g_Visited[g_iN] = true;
 
-        if (cur_num == b)
-        {
-            cout << cur_op << '\n';
-            return;
-        }
+	while(!Qs.empty())
+	{
+		pair<int, string> Cur = Qs.front();
+		Qs.pop();
 
-        int D, S, L, R, temp;
-        // D 연산
-        D = (cur_num * 2) % 10000;
-        if (!visited[D])
-        {
-            visited[D] = true;
-            q.push(make_pair(D, cur_op + "D"));
-        }
+		if (g_iM == Cur.first)
+		{
+			cout << Cur.second << '\n';
+			return;
+		}
 
-        // S 연산
-        S = cur_num - 1 < 0 ? 9999 : cur_num - 1;
-        if (!visited[S])
-        {
-            visited[S] = true;
-            q.push(make_pair(S, cur_op + "S"));
-        }
 
-        // L 연산
-        L = (cur_num % 1000) * 10 + (cur_num / 1000);
-        if (!visited[L])
-        {
-            visited[L] = true;
-            q.push(make_pair(L, cur_op + "L"));
-        }
+		int iD = (Cur.first * 2) % 10000;
+		if (iD <= 9999 && !g_Visited[iD])
+		{
+			g_Visited[iD] = true;
+			Qs.push({ iD, Cur.second + "D" });
+		}
+	
 
-        // R 연산
-        R = cur_num / 10 + (cur_num % 10) * 1000;
-        if (!visited[R])
-        {
-            visited[R] = true;
-            q.push(make_pair(R, cur_op + "R"));
-        }
-    }
+		int iS = Cur.first - 1 < 0 ? 9999 : Cur.first - 1;
+		if (iS <= 9999 && !g_Visited[iS])
+		{
+			g_Visited[iS] = true;
+			Qs.push({ iS, Cur.second + "S" });
+		}
+
+
+		int iL = (Cur.first % 1000) * 10 + (Cur.first / 1000);
+		if (iL <= 9999 && !g_Visited[iL])
+		{
+			g_Visited[iL] = true;
+			Qs.push({ iL, Cur.second + "L" });
+
+		}
+
+
+		int iR = Cur.first / 10 + (Cur.first % 10) * 1000;
+		if (iR <= 9999 && !g_Visited[iR])
+		{
+			g_Visited[iR] = true;
+			Qs.push({ iR, Cur.second + "R" });
+		}
+
+	}
+
 }
 
 int main()
 {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    cout.tie(NULL);
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
 
-    int T;
-    cin >> T;
+	int iT;
+	cin >> iT;
 
-    while (T--)
-    {
-        cin >> a >> b;
-        memset(visited, false, sizeof(visited)); // 초기화
-        bfs();
-    }
+	for (int i = 0; i < iT; ++i)
+	{
+		cin >> g_iN >> g_iM;
 
-    return 0;
+		Reset();
+
+		BFS();
+	}
+
+	return 0;
 }
