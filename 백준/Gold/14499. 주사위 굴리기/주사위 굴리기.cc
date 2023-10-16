@@ -12,7 +12,6 @@ int g_iN, g_iM;
 int g_Matrix[20][20] = { 0 };
 pair<int, int> g_StartPos;
 int g_iK;
-vector<int> g_Order;
 
 int g_Das[7] = { 0 };
 int g_DirX[] = { 0 , 1, -1, 0, 0 };
@@ -78,7 +77,7 @@ int main()
 		}
 	}
 
-	vector<int> g_Anss;
+
 	for (int i = 0; i < g_iK; ++i)
 	{
 
@@ -104,17 +103,10 @@ int main()
 			g_Matrix[inY][inX] = 0;
 		}
 			
-		
-		// Up 출력
-		g_Anss.push_back(g_Das[Up]);
+		cout << g_Das[Up] << '\n';
 
 	}
 
-
-	for (int i = 0; i < g_Anss.size(); ++i)
-	{
-		cout << g_Anss[i] << '\n';
-	}
 
 	return 0;
 }
