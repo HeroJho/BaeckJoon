@@ -1,47 +1,42 @@
-
 #include <iostream>
+#include <vector>
 #include <list>
-#include <algorithm>
 #include <string>
+#include <algorithm>
 
 using namespace std;
 
-struct tagPos
+int g_iN, g_iM;
+int g_Matirx[10001][501] = { 0 };
+bool g_Visited[10001][501] = { false };
+int g_DirX[] = { 1, 1, 1 };
+int g_DirY[] = { -1, 0, 1 };
+
+bool IsIn(int iX, int iY)
 {
-	int m_iX, m_iY;
-	tagPos() : m_iX(0), m_iY(0) {};
-	tagPos(int iX, int iY) { m_iX = iX; m_iY = iY; }
-};
-
-int g_iY, g_iX;
-
-int g_iMatrix[10000][500] = {0};
-bool g_bVisited[10000][500] = { false };
-			// 오위 오 오아
-int g_iDirX[3] = {1, 1, 1};
-int g_iDirY[3] = {-1, 0, 1};
-
-bool isIn(int iX, int iY)
-{
-	return iX >= 0 && iX < g_iX&& iY >= 0 && iY < g_iY;
+	return iX >= 0 && iX < g_iM && iY >= 0 && iY < g_iN;
 }
 
-bool DFS(tagPos Pos)
+bool DFS(int iX, int iY)
 {
-	g_bVisited[Pos.m_iY][Pos.m_iX] = true;
-	if (Pos.m_iX == g_iX - 1)
-		return true;
-
-	for (int j = 0; j < 3; ++j)
+	if (g_iM - 1 == iX)
 	{
-		int inX = Pos.m_iX + 1;
-		int inY = Pos.m_iY + g_iDirY[j];
+		return true;
+	}
 
-		if (isIn(inX, inY) && g_iMatrix[inY][inX] == 0 && g_bVisited[inY][inX] == false)
+
+	for (int i = 0; i < 3; ++i)
+	{
+		int inX = iX + g_DirX[i];
+		int inY = iY + g_DirY[i];
+
+		if (IsIn(inX, inY) && !g_Visited[inY][inX] && g_Matirx[inY][inX] != 1)
 		{
-			if (DFS(tagPos(inX, inY)))
+			g_Visited[inY][inX] = true;
+			if (DFS(inX, inY))
 				return true;
 		}
+
 	}
 
 	return false;
@@ -50,34 +45,37 @@ bool DFS(tagPos Pos)
 
 int main()
 {
-	cin >> g_iY >> g_iX;
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
 
-	for (int i = 0; i < g_iY; ++i)
+	cin >> g_iN >> g_iM;
+	for (int y = 0; y < g_iN; ++y)
 	{
-		string sTemp = "";
-		cin >> sTemp;
-
-		for (int j = 0; j < g_iX; ++j)
+		for (int x = 0; x < g_iM; ++x)
 		{
-			if (sTemp[j] == '.')
-				g_iMatrix[i][j] = 0;
-			else
-				g_iMatrix[i][j] = 1;
+			char cTemp; cin >> cTemp;
+			if (cTemp == 'x')
+			{
+				g_Matirx[y][x] = 1;
+			}
+
+
 		}
 	}
 
 
-
-	int iCount = 0;
-
-	for (int i = 0; i < g_iY; ++i)
+	int iAns = 0;
+	for (int y = 0; y < g_iN; ++y)
 	{
-		bool isA = DFS(tagPos(0, i));
-		if (isA)
-			++iCount;
+		g_Visited[y][0] = true;
+		if (DFS(0, y))
+		{
+			++iAns;
+		}
+
 	}
 
-	cout << iCount;
+	cout << iAns;
 
 	return 0;
 }
