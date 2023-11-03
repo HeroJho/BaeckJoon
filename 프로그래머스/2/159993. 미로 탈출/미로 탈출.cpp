@@ -1,7 +1,6 @@
 #include <string>
 #include <vector>
 #include <queue>
-
 using namespace std;
 
 int g_iN, g_iM;
@@ -9,24 +8,18 @@ vector<string> g_Maps;
 int g_Visited[200][200] = { false };
 int g_DirX[] = { 0, 0, -1, 1 };
 int g_DIrY[] = { -1, 1, 0, 0 };
-
 pair<int, int> g_CurPos;
 
 void Reset()
 {
 	for (int y = 0; y < g_iN; ++y)
-	{
 		for (int x = 0; x < g_iM; ++x)
-		{
 			g_Visited[y][x] = false;
-		}
-	}
-
 }
 
 bool IsIn(int iX, int iY)
 {
-	return iX >= 0 && iX < g_iM&& iY >= 0 && iY < g_iN;
+	return iX >= 0 && iX < g_iM && iY >= 0 && iY < g_iN;
 }
 
 int BFS(char cDest)
@@ -39,7 +32,6 @@ int BFS(char cDest)
 	while (!Qs.empty())
 	{
 		int iSize = Qs.size();
-
 		for (int s = 0; s < iSize; ++s)
 		{
 
@@ -80,8 +72,8 @@ int solution(vector<string> maps) {
 	int answer = 0;
 
 	g_Maps = maps;
-	g_iN = g_Maps.size();
-	g_iM = g_Maps[0].length();
+	g_iN = g_Maps.size(); 
+    g_iM = g_Maps[0].length();
 	for (int y = 0; y < g_iN; ++y)
 	{
 		for (int x = 0; x < g_iM; ++x)
@@ -95,18 +87,21 @@ int solution(vector<string> maps) {
 		}
 	}
 
+    
 
-	answer = BFS('L');
-	if (answer != -1)
-	{
-		Reset();
-		int iTemp = BFS('E');
-		if (iTemp == -1)
-			answer = -1;
-		else
-			answer += iTemp;
-	}
+	int iTemp = BFS('L');
+	if (iTemp == -1)
+		return -1;
+	answer += iTemp;
+
+    Reset();
+    
+	iTemp = BFS('E');
+	if (iTemp == -1)
+		return -1;
+	answer += iTemp;
 
 
+    
 	return answer;
 }
