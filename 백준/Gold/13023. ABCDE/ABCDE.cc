@@ -2,43 +2,45 @@
 #include <vector>
 #include <list>
 #include <string>
+#include <queue>
 #include <algorithm>
+#include "limits.h"
 
 using namespace std;
 
 int g_iN, g_iM;
-vector<int> g_Matrix[2000];
-bool g_Visited[2000] = { false };
-bool g_bTrue = false;
+vector<int> g_Matrix[2001];
+bool g_Visited[2001] = { false };
 
 void Reset()
 {
-	for (int i = 0; i < g_iN; ++i)
+	for (int i = 0; i <= g_iN; ++i)
 	{
 		g_Visited[i] = false;
 	}
 }
 
-void DFS(int iDepth, int iCurNum)
+bool DFS(int iDepth, int iCurIndex)
 {
-	if (4 <= iDepth)
+	if (iDepth == 4)
 	{
-		g_bTrue = true;
-		return;
+		return true;
 	}
 
-	for (int i = 0; i < g_Matrix[iCurNum].size(); ++i)
+	for (int i = 0; i < g_Matrix[iCurIndex].size(); ++i)
 	{
-		int inNex = g_Matrix[iCurNum][i];
-		if (g_Visited[inNex])
+		int inIndex = g_Matrix[iCurIndex][i];
+		if (g_Visited[inIndex])
 			continue;
 
-		g_Visited[inNex] = true;
-		DFS(iDepth + 1, inNex);
-		g_Visited[inNex] = false;
+		g_Visited[inIndex] = true;
+		if (DFS(iDepth + 1, inIndex))
+			return true;
+		g_Visited[inIndex] = false;
 
 	}
 
+	return false;
 }
 
 int main()
@@ -49,26 +51,24 @@ int main()
 	cin >> g_iN >> g_iM;
 	for (int i = 0; i < g_iM; ++i)
 	{
-		int iStart, iEnd;
-		cin >> iStart >> iEnd;
-		g_Matrix[iStart].push_back(iEnd);
-		g_Matrix[iEnd].push_back(iStart);
+		int iTemp1, iTemp2;
+		cin >> iTemp1 >> iTemp2;
+		g_Matrix[iTemp1].push_back(iTemp2);
+		g_Matrix[iTemp2].push_back(iTemp1);
 	}
 
-
-	for (int i = 0; i < g_iN; ++i)
+	for (int i = 0; i <= g_iN; ++i)
 	{
 		Reset();
-
 		g_Visited[i] = true;
-		DFS(0, i);
-		if (g_bTrue)
-			break;
-
+		if (DFS(0, i))
+		{
+			cout << 1;
+			return 0;
+		}
 	}
-	
 
-	cout << g_bTrue;
+	cout << 0;
 
 	return 0;
 }
