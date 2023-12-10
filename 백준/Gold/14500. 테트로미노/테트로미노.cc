@@ -15,7 +15,6 @@ int g_iAns;
 
 void Spine(const vector<pair<int, int>>& Block, int iRad, vector<pair<int ,int>>& OUT_SpineBlock)
 {
-	
 	for (int i = 0; i < 4; ++i)
 	{
 		pair<int, int> Pos = Block[i];
@@ -35,7 +34,6 @@ void Spine(const vector<pair<int, int>>& Block, int iRad, vector<pair<int ,int>>
 
 void Flip(const vector<pair<int, int>>& Block, vector<pair<int, int>>& OUT_SpineBlock)
 {
-	// OUT_SpineBlock.clear();
 	for (int i = 0; i < 4; ++i)
 	{
 		OUT_SpineBlock[i] = { Block[i].first, Block[i].second * -1 };
@@ -50,7 +48,6 @@ bool IsIn(int iX, int iY)
 
 void Check(const vector<pair<int, int>>& Block)
 {
-
 	for (int i = 0; i < g_iN; ++i)
 	{
 		for (int j = 0; j < g_iM; ++j)
@@ -68,18 +65,13 @@ void Check(const vector<pair<int, int>>& Block)
 					break;
 				}
 					
-
 				iSum += g_Matrix[inY][inX];
 
 			}
 
 			if (g_iAns < iSum)
-			{
 				g_iAns = iSum;
-			}
 
-
-			
 		}
 	}
 
@@ -91,32 +83,6 @@ int main()
 	ios::sync_with_stdio(false);
 	cin.tie(0); cout.tie(0);
 
-	g_Ts[0].push_back({ 0,0 });
-	g_Ts[0].push_back({ 1,0 });
-	g_Ts[0].push_back({ 2,0 });
-	g_Ts[0].push_back({ 3,0 });
-
-	g_Ts[1].push_back({ 0,0 });
-	g_Ts[1].push_back({ 1,0 });
-	g_Ts[1].push_back({ 1,1 });
-	g_Ts[1].push_back({ 0,1 });
-
-	g_Ts[2].push_back({ 0,0 });
-	g_Ts[2].push_back({ 0,1 });
-	g_Ts[2].push_back({ 0,2 });
-	g_Ts[2].push_back({ 1,0 });
-
-	g_Ts[3].push_back({ 0,0 });
-	g_Ts[3].push_back({ 0,1 });
-	g_Ts[3].push_back({ 1,0 });
-	g_Ts[3].push_back({ 1,-1 });
-
-	g_Ts[4].push_back({ 0,0 });
-	g_Ts[4].push_back({ 1,0 });
-	g_Ts[4].push_back({ -1,0 });
-	g_Ts[4].push_back({ 0,-1 });
-
-
 	cin >> g_iN >> g_iM;
 	for (int i = 0; i < g_iN; ++i)
 	{
@@ -126,28 +92,30 @@ int main()
 		}
 	}
 
+	
+	g_Ts[0] = { { 0,0 }, { 1,0 }, { 2,0 }, { 3,0 } };
+	g_Ts[1] = { { 0,0 }, { 1,0 }, { 1,1 }, { 0,1 } };
+	g_Ts[2] = { { 0,0 }, { 0,1 }, { 0,2 }, { 1,0 } };
+	g_Ts[3] = { { 0,0 }, { 0,1 }, { 1,0 }, { 1,-1 } };
+	g_Ts[4] = { { 0,0 }, { 1,0 }, { -1,0 }, { 0,-1 } };
+
 
 	vector<pair<int, int>> Out_Block(4);
 	for (int i = 0; i < 5; ++i)
 	{
+		vector<pair<int, int>> FlipBlock(4);
+		Flip(g_Ts[i], FlipBlock);
+
 		Check(g_Ts[i]);
-		Spine(g_Ts[i], 1, Out_Block);
-		Check(Out_Block);
-		Spine(g_Ts[i], 2, Out_Block);
-		Check(Out_Block);
-		Spine(g_Ts[i], 3, Out_Block);
-		Check(Out_Block);
+		Check(FlipBlock);
 
-		vector<pair<int, int>> TempBlock(4);
-		Flip(g_Ts[i], TempBlock);
-
-		Check(TempBlock);
-		Spine(TempBlock, 1, Out_Block);
-		Check(Out_Block);
-		Spine(TempBlock, 2, Out_Block);
-		Check(Out_Block);
-		Spine(TempBlock, 3, Out_Block);
-		Check(Out_Block);
+		for (int k = 1; k < 4; ++k)
+		{
+			Spine(g_Ts[i], k, Out_Block);
+			Check(Out_Block);
+			Spine(FlipBlock, k, Out_Block);
+			Check(Out_Block);
+		}
 
 	}
 
