@@ -1,129 +1,158 @@
 #include <iostream>
 #include <vector>
 #include <queue>
+#include <algorithm>
+#include <set>
+
+#define MAX 500
 
 using namespace std;
 
-struct Vec2D
-{
-	int iX, iY;
-	Vec2D(int x, int y) : iX(x), iY(y){ }
-};
-
 int g_iN, g_iM;
-int g_iMatrix[500][500] = { 0 };
+int g_Matrix[MAX][MAX] = { 0 };
+vector<pair<int, int>> g_Ts[5];
+int g_iAns;
 
-vector<Vec2D> g_OriBlock[5]{ 
-	{ {0, 0}, {1, 0}, {2, 0}, {3, 0} }, 
-	{ {0, 0}, {1, 0}, {1, 1}, {0, 1} }, 
-	{ {0, 0}, {0, 1}, {0, 2}, {1, 2} }, 
-	{ {0, 0}, {0, 1}, {1, 1}, {1, 2} }, 
-	{ {0, 0}, {1, 0}, {2, 0}, {1, 1} } };
-
-
-void Rot_Index(vector<Vec2D>& RotIndex)
+void Spine(const vector<pair<int, int>>& Block, int iRad, vector<pair<int ,int>>& OUT_SpineBlock)
 {
-	// 90도 회전 = 둘이 바꾸고, 바꾼거에서 - 곱하기
 	
 	for (int i = 0; i < 4; ++i)
 	{
-		int iTemp = RotIndex[i].iX;
-		RotIndex[i].iX = RotIndex[i].iY;
-		RotIndex[i].iY = iTemp;
+		pair<int, int> Pos = Block[i];
 
-		RotIndex[i].iX *= -1;
+		for (int k = 0; k < iRad; ++k)
+		{
+			int iTemp = Pos.first;
+			Pos.first = Pos.second;
+			Pos.second = iTemp * -1;
+		}
+
+		OUT_SpineBlock[i] = Pos;
+
 	}
 
 }
 
-void Flip_Index(vector<Vec2D>& RotIndex)
+void Flip(const vector<pair<int, int>>& Block, vector<pair<int, int>>& OUT_SpineBlock)
 {
+	// OUT_SpineBlock.clear();
 	for (int i = 0; i < 4; ++i)
 	{
-		RotIndex[i].iX *= -1;
+		OUT_SpineBlock[i] = { Block[i].first, Block[i].second * -1 };
 	}
+
 }
 
-bool Check_Range(int iX, int iY)
+bool IsIn(int iX, int iY)
 {
-	return iX < g_iN && iX >= 0 && iY < g_iM && iY >= 0;
+	return iX >= 0 && iX < g_iM&& iY >= 0 && iY < g_iN;
 }
 
-int Ans()
+void Check(const vector<pair<int, int>>& Block)
 {
-	int iMaxCount = 0;
-	for (int y = 0; y < g_iM; ++y)
+
+	for (int i = 0; i < g_iN; ++i)
 	{
-		for (int x = 0; x < g_iN; ++x)
+		for (int j = 0; j < g_iM; ++j)
 		{
-			for (int i = 0; i < 5; ++i)
+
+			int iSum = 0;
+			for (int k = 0; k < 4; ++k)
 			{
-				// 돌리기
-				int iFlips = 2;
-				while (iFlips)
-				{
-					vector<Vec2D> Blocks = g_OriBlock[i];
-
-					--iFlips;
-					if (iFlips == 0)
-					{
-						Flip_Index(Blocks);
-					}
-
-					for (int r = 0; r < 4; ++r)
-					{
-						Rot_Index(Blocks);
-						int iSum = 0;
-
-						bool bBreak = false;
-						for (int k = 0; k < 4; ++k)
-						{
-							int inX = x + Blocks[k].iX;
-							int inY = y + Blocks[k].iY;
-
-							if (Check_Range(inX, inY))
-							{
-								iSum += g_iMatrix[inY][inX];
-							}
-							else
-							{
-								bBreak = true;
-								break;
-							}
-						}
-
-						if (!bBreak && iMaxCount < iSum)
-						{
-							iMaxCount = iSum;
-						}
-					}
-
-				}
+				int inX = j + Block[k].first;
+				int inY = i + Block[k].second;
 				
+				if (!IsIn(inX, inY))
+				{
+					iSum = 0;
+					break;
+				}
+					
+
+				iSum += g_Matrix[inY][inX];
+
 			}
 
+			if (g_iAns < iSum)
+			{
+				g_iAns = iSum;
+			}
+
+
+			
 		}
 	}
 
-	return iMaxCount;
 }
+
 
 int main()
 {
-	ios_base::sync_with_stdio(false);
-	cin.tie(NULL);
+	ios::sync_with_stdio(false);
+	cin.tie(0); cout.tie(0);
 
-	cin >> g_iM >> g_iN;
+	g_Ts[0].push_back({ 0,0 });
+	g_Ts[0].push_back({ 1,0 });
+	g_Ts[0].push_back({ 2,0 });
+	g_Ts[0].push_back({ 3,0 });
 
-	for (int y = 0; y < g_iM; ++y)
+	g_Ts[1].push_back({ 0,0 });
+	g_Ts[1].push_back({ 1,0 });
+	g_Ts[1].push_back({ 1,1 });
+	g_Ts[1].push_back({ 0,1 });
+
+	g_Ts[2].push_back({ 0,0 });
+	g_Ts[2].push_back({ 0,1 });
+	g_Ts[2].push_back({ 0,2 });
+	g_Ts[2].push_back({ 1,0 });
+
+	g_Ts[3].push_back({ 0,0 });
+	g_Ts[3].push_back({ 0,1 });
+	g_Ts[3].push_back({ 1,0 });
+	g_Ts[3].push_back({ 1,-1 });
+
+	g_Ts[4].push_back({ 0,0 });
+	g_Ts[4].push_back({ 1,0 });
+	g_Ts[4].push_back({ -1,0 });
+	g_Ts[4].push_back({ 0,-1 });
+
+
+	cin >> g_iN >> g_iM;
+	for (int i = 0; i < g_iN; ++i)
 	{
-		for (int x = 0; x < g_iN; ++x)
+		for (int j = 0; j < g_iM; ++j)
 		{
-			cin >> g_iMatrix[y][x];
+			cin >> g_Matrix[i][j];
 		}
 	}
 
-	cout << Ans();
+
+	vector<pair<int, int>> Out_Block(4);
+	for (int i = 0; i < 5; ++i)
+	{
+		Check(g_Ts[i]);
+		Spine(g_Ts[i], 1, Out_Block);
+		Check(Out_Block);
+		Spine(g_Ts[i], 2, Out_Block);
+		Check(Out_Block);
+		Spine(g_Ts[i], 3, Out_Block);
+		Check(Out_Block);
+
+		vector<pair<int, int>> TempBlock(4);
+		Flip(g_Ts[i], TempBlock);
+
+		Check(TempBlock);
+		Spine(TempBlock, 1, Out_Block);
+		Check(Out_Block);
+		Spine(TempBlock, 2, Out_Block);
+		Check(Out_Block);
+		Spine(TempBlock, 3, Out_Block);
+		Check(Out_Block);
+
+	}
+
+	cout << g_iAns;
+
 
 	return 0;
 }
