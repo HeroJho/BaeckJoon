@@ -21,10 +21,11 @@ class Func1
 public:
     bool operator()(vector<int> L, vector<int> R)
     {
-        return L[g_Col] == R[g_Col] && L[0] > R[0];
+         return L[g_Col] == R[g_Col] && L[0] > R[0];
     }
 
 };
+
 
 int DoXOR(int L, int R)
 {
@@ -55,12 +56,6 @@ int DoXOR(int L, int R)
         iNum /= 2;
     }
 
-    // 0101
-    // 1010
-    // 11001
-
-    //reverse(BL.begin(), BL.end());
-    //reverse(BR.begin(), BR.end());
 
     int MaxSize = max(BL.size(), BR.size());
 
