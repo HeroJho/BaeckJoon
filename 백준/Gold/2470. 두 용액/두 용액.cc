@@ -13,11 +13,11 @@ int main()
 	ios::sync_with_stdio(false);
 	cin.tie(0); cout.tie(0);
 
-	int iN;
-	cin >> iN;
+	int N;
+	cin >> N;
 
 	vector<long long> Inputs;
-	for (int i = 0; i < iN; ++i)
+	for (int i = 0; i < N; ++i)
 	{
 		long long iTemp; cin >> iTemp;
 		Inputs.push_back(iTemp);
@@ -25,38 +25,31 @@ int main()
 
 	sort(Inputs.begin(), Inputs.end());
 
-	int iLeft = 0, iRight = Inputs.size() - 1;
-	int ivLeft = 0, ivRight = 0;
-	long long iMin = LLONG_MAX;
+	int Left = 0, Right = Inputs.size() - 1;
+	int vLeft = 0, vRight = 0;
+	long long Min = LLONG_MAX;
 
-	while (iLeft < iRight)
+	while (Left < Right)
 	{
-		long long iM = Inputs[iLeft] + Inputs[iRight];
+		long long M = Inputs[Left] + Inputs[Right];
 
-		if (iMin > abs(iM))
+		if (Min > abs(M))
 		{
-			ivLeft = iLeft;
-			ivRight = iRight;
-			iMin = abs(iM);
+			vLeft = Left;
+			vRight = Right;
+			Min = abs(M);
 		}
 
-		if (iM > 0)
-		{
-			--iRight;
-		}
-		else if (iM < 0)
-		{
-			++iLeft;
-		}
+		if (M > 0)
+			--Right;
+		else if (M < 0)
+			++Left;
 		else
-		{
 			break;
-		}
-		
-	}
-	
 
-	cout << Inputs[ivLeft] << " " << Inputs[ivRight];
+	}
+
+	cout << Inputs[vLeft] << " " << Inputs[vRight];
 
 	return 0;
 }
