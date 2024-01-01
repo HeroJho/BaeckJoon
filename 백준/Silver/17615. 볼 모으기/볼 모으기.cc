@@ -12,16 +12,18 @@ int Run(char Check, int N, string S)
 {
 	int Left = 0, Right = S.size() - 1;
 	
-	while (Right > 0 && S[Right] == Check)
+	while (Right >= 0 && S[Right] == Check)
 	{
 		// Right 찾기
 		// Left 찾기
 		--Right;
+		if (Right < 0)
+			return 0;
 	}
-
+	// RB
 	int iCount = 0;
 
-	Left = Right;
+	Left = Right - 1;
 	while (Left >= 0)
 	{
 		if (S[Left] == Check)
@@ -49,6 +51,9 @@ int main()
 
 	int iAns = 0;
 	iAns = Run('R', N, S);
+	iAns = min(iAns, Run('B', N, S));
+	reverse(S.begin(), S.end());
+	iAns = min(iAns, Run('R', N, S));
 	iAns = min(iAns, Run('B', N, S));
 
 	cout << iAns;
