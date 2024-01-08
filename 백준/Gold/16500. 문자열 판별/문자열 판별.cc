@@ -1,12 +1,12 @@
 #include <iostream>
 #include <vector>
-#include <unordered_set>
+#include <unordered_map>
 
 using namespace std;
 
 string g_S;
 int g_N;
-unordered_set<string> g_Words;
+unordered_map<char, vector<string>> g_Inputs;
 vector<bool> g_DP;
 
 bool DFS(int start)
@@ -19,11 +19,14 @@ bool DFS(int start)
 
     g_DP[start] = true;
 
-    for (int i = 1; start + i <= g_S.length(); ++i)
+    auto iter = g_Inputs.find(g_S[start]);
+    if (iter != g_Inputs.end())
     {
-        string current = g_S.substr(start, i);
-        if (g_Words.find(current) != g_Words.end() && DFS(start + i))
-            return true;
+        for (const string& word : iter->second)
+        {
+            if (g_S.compare(start, word.length(), word) == 0 && DFS(start + word.length()))
+                return true;
+        }
     }
 
     return false;
@@ -41,7 +44,7 @@ int main()
     {
         string sTemp;
         cin >> sTemp;
-        g_Words.insert(sTemp);
+        g_Inputs[sTemp[0]].push_back(sTemp);
     }
 
     g_DP.resize(g_S.length(), false);
