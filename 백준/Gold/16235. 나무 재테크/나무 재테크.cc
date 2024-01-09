@@ -7,44 +7,31 @@
 
 using namespace std;
 
-struct Data
-{
-    int Age = 0;
-    bool bDead = false;
+int g_N, g_M, g_K;
+int g_A[MAX][MAX] = { 0 }; // 충전 양분
+int g_E[MAX][MAX] = { 5 }; // 현재 양분
+vector<int> g_Wood[MAX][MAX];
+vector<int> g_DeadWood[MAX][MAX];
+vector<int> g_FiveWood[MAX][MAX];
 
-    Data(int age, bool bdead) : Age(age), bDead(false) {}
-};
+int g_DirX[] = { 0, 0, -1, 1, 1, 1, -1, -1 };
+int g_DirY[] = { -1 ,1, 0, 0, 1, -1, 1, -1 };
 
 class Func
 {
 public:
-    bool operator()(Data L, Data R)
+    bool operator()(int L, int R)
     {
-        return L.Age < R.Age;
+        return L < R;
     }
 };
-
-int g_N, g_M, g_K;
-int g_A[MAX][MAX] = { 0 }; // 충전 양분
-int g_E[MAX][MAX] = { 5 }; // 현재 양분
-vector<Data> g_Wood[MAX][MAX];
-vector<Data> g_DeadWood[MAX][MAX];
-vector<Data> g_FiveWood[MAX][MAX];
-
-int g_DirX[] = { 0, 0, -1, 1, 1, 1, -1, -1 };
-int g_DirY[] = { -1 ,1, 0, 0, 1, -1, 1, -1 };
 
 
 void Init()
 {
     for (int y = 1; y <= g_N; ++y)
-    {
         for (int x = 1; x <= g_N; ++x)
-        {
             g_E[y][x] = 5;
-        }
-    }
-
 }
 
 void A()
@@ -67,7 +54,7 @@ void A()
 
             for (auto iter = g_Wood[y][x].begin(); iter != g_Wood[y][x].end();)
             {
-                int Dis = g_E[y][x] - iter->Age;
+                int Dis = g_E[y][x] - *iter;
                 if (Dis < 0)
                 {
                     // 죽는다
@@ -78,9 +65,9 @@ void A()
                 {
                     // 먹는다
                     g_E[y][x] = Dis;
-                    ++(iter->Age);
+                    ++(*iter);
 
-                    if (iter->Age % 5 == 0)
+                    if (*iter % 5 == 0)
                         g_FiveWood[y][x].push_back(*iter);
 
                     ++iter;
@@ -106,8 +93,8 @@ void B()
             int Sum = 0;
             for (int i = 0; i < g_DeadWood[y][x].size(); ++i)
             {
-                Data Wood = g_DeadWood[y][x][i];
-                Sum += (Wood.Age / 2);
+                int Age = g_DeadWood[y][x][i];
+                Sum += (Age / 2);
 
             }
 
@@ -135,7 +122,7 @@ void AddInf(int X, int Y)
         if (!IsIn(inX, inY))
             continue;
 
-        g_Wood[inY][inX].push_back({1, false});
+        g_Wood[inY][inX].push_back(1);
     }
 
 }
@@ -149,9 +136,7 @@ void C()
         {
     
             for (int i = 0; i < g_FiveWood[y][x].size(); ++i)
-            {
                 AddInf(x, y);
-            }
 
         }
     }
@@ -170,10 +155,6 @@ void D()
 
 int Go()
 {
-    // 봄    
-    // 여름
-    // 가을
-    // 겨울
 
     while (g_K--)
     {
@@ -217,7 +198,7 @@ int main()
         int x, y, z; 
         cin >> x >> y >> z;
         
-        g_Wood[x][y].push_back({z, false});
+        g_Wood[x][y].push_back(z);
     }
 
     Init();
