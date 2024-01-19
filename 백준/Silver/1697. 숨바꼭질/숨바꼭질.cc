@@ -1,61 +1,70 @@
 #include <iostream>
-#include <list>
+#include <vector>
+#include <queue>
+#include <algorithm>
+#include <set>
+#include "limits.h"
 
 using namespace std;
 
-struct Pos
+int g_N, g_K;
+bool g_Visited[100001] = { false };
+
+int BFS()
 {
-	int x, t;
-	Pos() { x = 0; t = 0; }
-	Pos(int X, int T) { x = X; t = T; }
-};
+	queue<int> Qs;
+	Qs.push(g_N);
+	//g_Visited[g_N] = true;
 
-int S, T;
-list<Pos> Q;
-bool Visited[100001] = { 0 };
-
-bool CheckBound(int x)
-{
-	return x >= 0 && x < 100001;
-}
-
-void BFS()
-{
-	Q.push_back(Pos(S, 0));
-
-	while (!Q.empty())
+	int Count = 0;
+	while (!Qs.empty())
 	{
-		Pos Cur = Q.front(); Q.pop_front();
+		int Size = Qs.size();
 
-		if (Cur.x == T)
+		int bStop = false;
+		for (int t = 0; t < Size; ++t)
 		{
-			cout << Cur.t;
-			return;
+			int Cur = Qs.front();
+			Qs.pop();
+
+			if (Cur > 100000 || Cur < 0)
+				continue;
+
+			if (Cur == g_K)
+			{
+				bStop = true;
+				break;
+			}
+
+
+			if (g_Visited[Cur])
+				continue;
+			g_Visited[Cur] = true;
+
+			Qs.push(Cur * 2);
+			Qs.push(Cur + 1);
+			Qs.push(Cur - 1);
+
 		}
 
-		if (CheckBound(Cur.x - 1) && Visited[Cur.x - 1] == false)
-		{
-			Q.push_back(Pos(Cur.x - 1, Cur.t + 1));
-			Visited[Cur.x - 1] = true;
-		}
-		if (CheckBound(Cur.x + 1) && Visited[Cur.x + 1] == false)
-		{
-			Q.push_back(Pos(Cur.x + 1, Cur.t + 1));
-			Visited[Cur.x + 1] = true;
-		}
-		if (CheckBound(Cur.x * 2) && Visited[Cur.x * 2] == false)
-		{
-			Q.push_back(Pos(Cur.x * 2, Cur.t + 1));
-			Visited[Cur.x * 2] = true;
-		}
+		if (bStop)
+			break;
+
+		++Count;
+		
 	}
+
+	return Count;
 }
 
 int main()
 {
-	cin >> S >> T;
+	ios::sync_with_stdio(false);
+	cin.tie(0); cout.tie(0);
 
-	BFS();
+	cin >> g_N >> g_K;
+
+	cout << BFS();
 
 	return 0;
 }
