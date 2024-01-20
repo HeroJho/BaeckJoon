@@ -1,74 +1,82 @@
 #include <iostream>
 #include <vector>
-#include <list>
+#include <queue>
+#include <algorithm>
+#include <set>
+#include <stack>
+#include "limits.h"
 
 using namespace std;
 
+
 int main()
 {
-    ios_base::sync_with_stdio(false);
-	cin.tie(NULL);
-    
-	// 4 3 6 8 7 5 2 1
-	// 1 2 3 4 5 6 7 8
+	ios::sync_with_stdio(false);
+	cin.tie(0); cout.tie(0);
+
+	// 1 2 3 4
+	// 1 2
+	// 1 2 5 6
+	// 1 2 5
+	// 1 2 5 7 8
+	// 
+
+	// pop과 i를 비교
+	// i가 크다면 i를 넣는다
+	// pop이 크면 pop한다
+
+
+	int N;
+	cin >> N;
 	
-	// Pop한 숫자를 다시 넣을 수 없다.
-
-	// 1. 정렬에서 맨 앞 숫자를 스택에 넣는다.
-	// 2. 비 정렬 맨 앞 숫자와 스택 숫자를 비교한다.
-	// 같다면
-	//	다를때 까지 빼서 + -를 기록한다.
-	// 다르다면
-	//	그냥 진행
-
-	int iN = 0; cin >> iN;
-	list<int> iStacks;
-	list<int> iNums;
-	list<int> iSortNums;
-	list<char> cAnss;
-	for (int i = 0; i < iN; ++i)
+	vector<int> Inputs;
+	for (int i = 0; i < N; ++i)
 	{
-		int iTemp = 0; cin >> iTemp;
-		iNums.push_back(iTemp);
+		int Temp;
+		cin >> Temp;
+		Inputs.push_back(Temp);
 	}
-	iSortNums = iNums;
-	iSortNums.sort();
 
-	// 1 2 5 3 4
-	// 1 2 3 4 5
+	vector<char> Anss;
 
-	iStacks.push_back(iSortNums.front());
-	iSortNums.pop_front();
-	cAnss.push_back('+');
-	while (!iNums.empty())
+	stack<int> Ss;
+	int CheckIndex = 0;
+	for (int i = 1; CheckIndex < N;)
 	{
-		if (!iStacks.empty() && (iStacks.back() == iNums.front()))
+		if (i > N + 1)
 		{
-			iNums.pop_front();
-			iStacks.pop_back();
-			cAnss.push_back('-');
+			cout << "NO";
+			return 0;
+		}
+		
+		if (Ss.empty())
+		{
+			Ss.push(i);
+			Anss.push_back('+');
+			++i;
+			continue;
+		}
+
+		int Top = Ss.top();
+		if (Top == Inputs[CheckIndex])
+		{
+			Ss.pop();
+			Anss.push_back('-');
+			++CheckIndex;
 		}
 		else
 		{
-			if (iSortNums.empty())
-			{
-				cout << "NO";
-				return 0;
-			}
-
-			iStacks.push_back(iSortNums.front());
-			iSortNums.pop_front();
-			cAnss.push_back('+');
+			Ss.push(i);
+			Anss.push_back('+');
+			++i;
 		}
+
 	}
 
-
-	for (auto cAns : cAnss)
+	for (int i = 0; i < Anss.size(); ++i)
 	{
-		cout << cAns << "\n";
+		cout << Anss[i] << '\n';
 	}
-
-
 
 	return 0;
 }
