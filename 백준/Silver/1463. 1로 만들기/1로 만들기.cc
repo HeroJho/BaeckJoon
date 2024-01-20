@@ -1,85 +1,85 @@
 #include <iostream>
 #include <vector>
-#include <list>
-#include <string>
+#include <queue>
 #include <algorithm>
+#include <set>
+#include "limits.h"
 
 using namespace std;
 
+int g_N;
+set<int> g_DP;
 
-struct tagData
+void BFS()
 {
-	int m_iNum = 0;
-	int m_iDapth = 0;
-	tagData() {};
-	tagData(int iNum, int iDapth) : m_iNum(iNum), m_iDapth(iDapth) {};
-};
-
-int BFS(int iNum)
-{
-	vector<bool> iDpTable(iNum, false);
-
-	list<tagData> iQs;
-
-	tagData Data(iNum, 0);
-	iQs.push_back(Data);
-
-	int iCount = 0;
-	while (true)
+	queue<int> Qs;
+	Qs.push(g_N);
+	g_DP.insert(g_N);
+	
+	int Count = 0;
+	while (!Qs.empty())
 	{
-		tagData iCurNum = iQs.front();
-		iQs.pop_front();
-		if (iCurNum.m_iNum == 1)
+		int Size = Qs.size();
+
+		for (int t = 0; t < Size; ++t)
 		{
-			Data = iCurNum;
-			break;
+			int Cur = Qs.front();
+			Qs.pop();
+
+			if (Cur == 1)
+			{
+				cout << Count;
+				return;
+			}
+
+			if (Cur % 3 == 0)
+			{
+				int Temp = Cur / 3;
+				if (g_DP.find(Temp) == g_DP.end())
+				{
+					g_DP.insert(Temp);
+					Qs.push(Temp);
+				}
+
+			}
+			if (Cur % 2 == 0)
+			{
+				int Temp = Cur / 2;
+				if (g_DP.find(Temp) == g_DP.end())
+				{
+					g_DP.insert(Temp);
+					Qs.push(Temp);
+				}
+
+			}
+			if (Cur - 1 >= 1)
+			{
+				int Temp = Cur - 1;
+				if (g_DP.find(Temp) == g_DP.end())
+				{
+					g_DP.insert(Temp);
+					Qs.push(Temp);
+				}
+
+			}
+
 		}
 
-		int iTemp = 0;
-		if (iCurNum.m_iNum % 3 == 0)
-		{
-			iTemp = iCurNum.m_iNum / 3;
-			if (iDpTable[iTemp] == false)
-			{
-				iQs.push_back(tagData(iTemp, iCurNum.m_iDapth + 1));
-				iDpTable[iTemp] = true;
-			}
-		}
-		if (iCurNum.m_iNum % 2 == 0)
-		{
-			iTemp = iCurNum.m_iNum / 2;
-			if (iDpTable[iTemp] == false)
-			{
-				iQs.push_back(tagData(iCurNum.m_iNum / 2, iCurNum.m_iDapth + 1));
-				iDpTable[iTemp] = true;
-			}
-		}
-		if (iCurNum.m_iNum - 1 > 0)
-		{
-			iTemp = iCurNum.m_iNum - 1;
-			if (iDpTable[iTemp] == false)
-			{
-				iQs.push_back(tagData(iCurNum.m_iNum - 1, iCurNum.m_iDapth + 1));
-				iDpTable[iTemp] = true;
-			}
-		}
-
+		++Count;
+				
 	}
 
-	return Data.m_iDapth;
+
 }
 
 
 int main()
 {
-	ios_base::sync_with_stdio(false);
-	cin.tie(NULL);
+	ios::sync_with_stdio(false);
+	cin.tie(0); cout.tie(0);
 
-	int iNum;
-	cin >> iNum;
-
-	int iCount = BFS(iNum);
-	cout << iCount;
+	cin >> g_N;
+	BFS();
 
 	return 0;
 }
