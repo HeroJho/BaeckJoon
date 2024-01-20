@@ -1,106 +1,111 @@
 #include <iostream>
 #include <vector>
-#include <list>
-#include <string>
+#include <queue>
 #include <algorithm>
+#include <set>
+#include "limits.h"
+
+#define N_MAX 101
+
 
 using namespace std;
 
+int g_N, g_M;
+int g_Matrix[N_MAX][N_MAX] = { 0 };
 
-int g_iN, g_iM;
-
-// 연결 리스트
-vector<list<int>> g_Graph;
-bool g_bVisited[100] = { false };
-vector<vector<int>> g_Dis;
+int g_NDis[N_MAX] = { 0 };
+int g_Anss[N_MAX] = { 0 };
 
 void Reset()
 {
-	for (int i = 0; i < 100; ++i)
+	for (int i = 1; i <= g_N; ++i)
 	{
-		g_bVisited[i] = false;
+		g_NDis[i] = -1;
 	}
 }
 
-// BFS를 돌면서
-// 방문하면 +1
-int BFS(int iStart)
+void BFS(int Start)
 {
-	list<int> iQs;
-	
-	iQs.push_back(iStart);
-	g_bVisited[iStart] = true;
+	queue<int> Qs;
+	Qs.push(Start);
+	g_NDis[Start] = 0;
 
-	while (!iQs.empty())
+	int Count = 1;
+	while (!Qs.empty())
 	{
-		int iCurNum = iQs.front();
-		iQs.pop_front();
+		int Size = Qs.size();
 
-		for (auto iNum : g_Graph[iCurNum])
+		for (int t = 0; t < Size; ++t)
 		{
-			if (g_bVisited[iNum])
-				continue;
+			int Cur = Qs.front();
+			Qs.pop();
 
-			iQs.push_back(iNum);
-			g_bVisited[iNum] = true;
+			for (int i = 1; i <= g_N; ++i)
+			{
+				if (Cur == i)
+					continue;
 
-			g_Dis[iStart][iNum] = g_Dis[iStart][iCurNum] + 1;
+				if (g_NDis[i] != -1)
+					continue;
+
+				if (g_Matrix[Cur][i] == 0)
+					continue;
+
+				g_NDis[i] = Count;
+
+				Qs.push(i);
+
+			}
+
 		}
 
+		++Count;
+
 	}
 
-	int iSumCount = 0;
-	for (int i = 0; i < g_Dis[iStart].size(); ++i)
-	{
-		iSumCount += g_Dis[iStart][i];
-	}
-
-	return iSumCount;
 }
-
 
 int main()
 {
-	ios_base::sync_with_stdio(false);
-	cin.tie(NULL);
+	ios::sync_with_stdio(false);
+	cin.tie(0); cout.tie(0);
 
-	cin >> g_iN >> g_iM;
-	g_Graph.resize(g_iN);
-	g_Dis.resize(g_iN);
-	for (int i = 0; i < g_iN; ++i)
+	cin >> g_N >> g_M;
+	for (int i = 0; i < g_M; ++i)
 	{
-		g_Dis[i].resize(g_iN);
+		int Temp1, Temp2;
+		cin >> Temp1 >> Temp2;
+		g_Matrix[Temp1][Temp2] = 1;
+		g_Matrix[Temp2][Temp1] = 1;
 	}
 
-	for (int i = 0; i < g_iM; ++i)
-	{
-		int iTemp1, iTemp2;
-		cin >> iTemp1 >> iTemp2;
-		iTemp1 -= 1;
-		iTemp2 -= 1;
-		g_Graph[iTemp1].push_back(iTemp2);
-		g_Graph[iTemp2].push_back(iTemp1);
-	}
 
-	int iMinCount = BFS(0);
-	int iAns = 0;
-	for (int i = 1; i < g_iN; ++i)
+	for (int i = 1; i <= g_N; ++i)
 	{
 		Reset();
-		int iCount = BFS(i);
-		if (iMinCount > iCount)
+		BFS(i);
+
+		for (int t = 1; t <= g_N; ++t)
 		{
-			iMinCount = iCount;
-			iAns = i;
+			if(g_NDis[t] != -1)
+				g_Anss[i] += g_NDis[t];
 		}
-		else if(iMinCount == iCount)
+
+	}
+
+	int Min = INT_MAX;
+	int MinIndex = 0;
+	for (int i = g_N; i > 0; --i)
+	{
+		if (Min >= g_Anss[i])
 		{
-			if (i < iAns)
-				iAns = i;
+			Min = g_Anss[i];
+			MinIndex = i;
 		}
 	}
 
-	cout << ++iAns;
+	cout << MinIndex;
 
 	return 0;
 }
+
