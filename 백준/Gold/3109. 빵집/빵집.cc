@@ -1,81 +1,85 @@
 #include <iostream>
 #include <vector>
-#include <list>
-#include <string>
+#include <queue>
 #include <algorithm>
+#include <set>
+#include "limits.h"
 
 using namespace std;
 
-int g_iN, g_iM;
-int g_Matirx[10001][501] = { 0 };
-bool g_Visited[10001][501] = { false };
-int g_DirX[] = { 1, 1, 1 };
-int g_DirY[] = { -1, 0, 1 };
+int g_N, g_M;
+char g_Matrix[10000][500] = { 0 };
 
-bool IsIn(int iX, int iY)
+bool g_Visited[10000][500] = { false };
+int g_DirX[3] = { 1, 1, 1 };
+int g_DirY[3] = { -1, 0, 1 };
+
+int g_Ans = 0;
+
+bool IsIn(int X, int Y)
 {
-	return iX >= 0 && iX < g_iM && iY >= 0 && iY < g_iN;
+	return X >= 0 && X < g_M&& Y >= 0 && Y < g_N;
 }
 
-bool DFS(int iX, int iY)
+bool DFS(pair<int, int> CurPos)
 {
-	if (g_iM - 1 == iX)
+	if (CurPos.first == g_M - 1)
 	{
+		g_Ans++;
 		return true;
 	}
 
 
 	for (int i = 0; i < 3; ++i)
 	{
-		int inX = iX + g_DirX[i];
-		int inY = iY + g_DirY[i];
+		int inX = g_DirX[i] + CurPos.first;
+		int inY = g_DirY[i] + CurPos.second;
 
-		if (IsIn(inX, inY) && !g_Visited[inY][inX] && g_Matirx[inY][inX] != 1)
-		{
-			g_Visited[inY][inX] = true;
-			if (DFS(inX, inY))
-				return true;
-		}
+		if (!IsIn(inX, inY))
+			continue;
+			
+		if (g_Matrix[inY][inX] == 'x')
+			continue;
+
+		if (g_Visited[inY][inX])
+			continue;
+		g_Visited[inY][inX] = true;
+
+
+		if (DFS({ inX, inY }))
+			return true;
 
 	}
 
 	return false;
 }
 
-
 int main()
 {
-	ios_base::sync_with_stdio(false);
-	cin.tie(NULL);
+	ios::sync_with_stdio(false);
+	cin.tie(0); cout.tie(0);
 
-	cin >> g_iN >> g_iM;
-	for (int y = 0; y < g_iN; ++y)
+	cin >> g_N >> g_M;
+	for (int y = 0; y < g_N; ++y)
 	{
-		for (int x = 0; x < g_iM; ++x)
+		for (int x = 0; x < g_M; ++x)
 		{
-			char cTemp; cin >> cTemp;
-			if (cTemp == 'x')
-			{
-				g_Matirx[y][x] = 1;
-			}
-
-
+			cin >> g_Matrix[y][x];
 		}
 	}
 
-
-	int iAns = 0;
-	for (int y = 0; y < g_iN; ++y)
+	for (int y = 0; y < g_N; ++y)
 	{
+		if (g_Matrix[y][0] == 'x')
+			continue;
+		if (g_Visited[y][0])
+			continue;
 		g_Visited[y][0] = true;
-		if (DFS(0, y))
-		{
-			++iAns;
-		}
 
+		DFS({ 0, y });
 	}
 
-	cout << iAns;
+	cout << g_Ans;
 
 	return 0;
 }
