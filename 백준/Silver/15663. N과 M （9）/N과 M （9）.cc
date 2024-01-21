@@ -1,65 +1,68 @@
 #include <iostream>
 #include <vector>
-#include <list>
-#include <string>
+#include <queue>
 #include <algorithm>
 
 using namespace std;
 
-int g_iN, g_iM;
-bool g_Check[10001] = { false };
+int g_N, g_M;
 vector<int> g_Inputs;
-vector<int> g_Anss;
+vector<int> g_Temp;
+bool g_Visited[10] = { false };
 
-
-void DFS(int iDepth)
+void DFS(int Depth)
 {
-	if (iDepth == g_iM)
-	{
-		for (int i = 0; i < g_Anss.size(); ++i)
-		{
-			cout << g_Anss[i] << ' ';
-		}
-		cout << '\n';
-		return;
-	}
+    if (Depth >= g_M)
+    {
+        for (int i = 0; i < g_M; ++i)
+        {
+            cout << g_Temp[i] << " ";
+        }
+        cout << "\n";
 
-	int iLast = -1;
-	for (int i = 0; i < g_iN; ++i)
-	{
-		if (g_Check[i])
-			continue;
+        return;
+    }
+        
+    int PreNum = -1;
+    for (int i = 0; i < g_Inputs.size(); ++i)
+    {
+        if (g_Visited[i])
+            continue;
 
-		if (iLast == g_Inputs[i])
-			continue;
-		iLast = g_Inputs[i];
+        if (PreNum == g_Inputs[i])
+            continue;
 
-		g_Check[i] = true;
-		g_Anss.push_back(g_Inputs[i]);
+        g_Visited[i] = true;
+        g_Temp.push_back(g_Inputs[i]);
 
-		DFS(iDepth + 1);
-		
-		g_Check[i] = false;
-		g_Anss.pop_back();
-	}
+        DFS(Depth + 1);
+
+        PreNum = g_Inputs[i];
+        g_Visited[i] = false;
+        g_Temp.pop_back();
+    }
+
 }
+
+// 1 7 9 9
+// 
 
 int main()
 {
-	ios_base::sync_with_stdio(false);
-	cin.tie(NULL);
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
 
-	cin >> g_iN >> g_iM;
-	for (int i = 0; i < g_iN; ++i)
-	{
-		int iTemp; cin >> iTemp;
-		g_Inputs.push_back(iTemp);
-	}
+    cin >> g_N >> g_M;
+    for (int i = 0; i < g_N; ++i)
+    {
+        int Temp;
+        cin >> Temp;
+        g_Inputs.push_back(Temp);
+    }
 
-	sort(g_Inputs.begin(), g_Inputs.end());
+    sort(g_Inputs.begin(), g_Inputs.end());
 
-	DFS(0);
+    DFS(0);
 
-
-	return 0;
+    return 0;
 }
