@@ -1,106 +1,104 @@
 #include <iostream>
 #include <vector>
-#include <list>
 #include <queue>
-#include <string>
 #include <algorithm>
+#include <set>
+#include "limits.h"
 
 using namespace std;
 
-struct Node
-{
-	int iNum = 0;
-	int iDis = 0;
-
-	Node() {};
-	Node(int num, int dis) : iNum(num), iDis(dis) {}
-};
-
-int g_iN;
-int g_iAns = 0;
-vector<list<Node>> g_Matrix(100001);
-int g_iMaxNodeDis[100001] = { 0 };
+int g_N;
+vector<pair<int, int>> g_Matrix[100001];
+int g_DP[100001] = { INT_MAX };
 
 void Reset()
 {
-	for (int i = 0; i <= g_iN; ++i)
+	for (int i = 1; i <= g_N; ++i)
 	{
-		g_iMaxNodeDis[i] = -1;
+		g_DP[i] = INT_MAX;
 	}
 }
 
-int BFS(int iStartNode)
+void BFS(int Start)
 {
-	queue<Node> iQs;
-	iQs.push(Node(iStartNode, 0));
-	g_iMaxNodeDis[iStartNode] = 0;
+	queue<pair<int ,int>> Qs;
+	Qs.push({Start, 0});
+	g_DP[Start] = 0;
 
-	int iMaxNode = 0;
-
-	while (!iQs.empty())
+	while (!Qs.empty())
 	{
-		Node CurNode = iQs.front();
-		iQs.pop();
+		pair<int, int> Cur = Qs.front();
+		Qs.pop();
 
-		for (auto NextNode : g_Matrix[CurNode.iNum])
+		for (int i = 0; i < g_Matrix[Cur.first].size(); ++i)
 		{
-			if (g_iMaxNodeDis[NextNode.iNum] == -1)
-			{
-				int iTDis = CurNode.iDis + NextNode.iDis;
+			
+			int inPos = g_Matrix[Cur.first][i].first;
+			int inDis = Cur.second + g_Matrix[Cur.first][i].second;
 
-	/*			if (g_iMaxNodeDis[NextNode.iNum] > iTDis)
-					continue;*/
-				g_iMaxNodeDis[NextNode.iNum] = iTDis;
+			if (g_DP[inPos] < inDis)
+				continue;
+			g_DP[inPos] = inDis;
 
-				iQs.push(Node(NextNode.iNum, iTDis));
+			Qs.push({inPos, inDis});
 
-				if (g_iAns < iTDis)
-				{
-					g_iAns = iTDis;
-					iMaxNode = NextNode.iNum;
-				}
-					
-			}
+		}
+
+	}
+
+}
+
+void FindMaxDis(int& OUT_Dis, int& OUT_Index)
+{
+	int Max = 0;
+	int MaxIndex = -1;
+	for (int i = 1; i <= g_N; ++i)
+	{
+		if (Max < g_DP[i])
+		{
+			Max = g_DP[i];
+			MaxIndex = i;
 		}
 	}
 
-	return iMaxNode;
+	OUT_Dis = Max;
+	OUT_Index = MaxIndex;
 }
 
 
 int main()
 {
-	ios_base::sync_with_stdio(false);
-	cin.tie(NULL);
+	ios::sync_with_stdio(false);
+	cin.tie(0); cout.tie(0);
 
-
-	cin >> g_iN;
-	for (int i = 0; i < g_iN; ++i)
+	cin >> g_N;
+	for (int i = 0; i < g_N; ++i)
 	{
-		int iNode;
-		cin >> iNode;
+		int Num; cin >> Num;
 
 		while (true)
 		{
-			int inNode, iDis;
-			cin >> inNode;
-
-			if (inNode == -1)
+			int OtherNum, Dis;
+			cin >> OtherNum;
+			if (OtherNum == -1)
 				break;
+			cin >> Dis;
 
-			cin >> iDis;
-
-			g_Matrix[iNode].push_back(Node(inNode, iDis));
+			g_Matrix[Num].push_back({ OtherNum, Dis });
 		}
+
 	}
 
+	int Dis, Index;
+	Reset();
+	BFS(1);
+	FindMaxDis(Dis, Index);
 
 	Reset();
-	int iNode = BFS(1); // 임의의 정점 x = 1
-	Reset();
-	BFS(iNode); // 정점 y
-
-	cout << g_iAns;
+	BFS(Index);
+	FindMaxDis(Dis, Index);
+	
+	cout << Dis;
 
 	return 0;
 }
