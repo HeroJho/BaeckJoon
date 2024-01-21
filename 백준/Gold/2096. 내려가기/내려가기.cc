@@ -1,82 +1,55 @@
 #include <iostream>
-
+#include <vector>
+#include <queue>
 
 using namespace std;
 
+int g_DP[100001][3] = { 0 };
+
 int main()
 {
-	ios_base::sync_with_stdio(false);
-	cin.tie(NULL);
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
 
-	int iN;
-	cin >> iN;
+    // 제일 큰 거 먼저 붙인다
+    int N;
+    cin >> N;
 
-
-	int i1, i2, i3;
-	cin >> i1 >> i2 >> i3;
-
-	int DPs[3] = { i1, i2, i3 };
-	int MinDPs[3] = { i1, i2, i3};
-	for (int i = 1; i < iN; ++i)
-	{
-		int i1, i2, i3;
-		cin >> i1 >> i2 >> i3;
-
-		int Temp1, Temp2, Temp3;
-		if(DPs[0] + i1 < DPs[1] + i1)
-			Temp1 = DPs[1] + i1;
-		else
-			Temp1 = DPs[0] + i1;
-
-		if (DPs[0] + i2 < DPs[1] + i2)
-			Temp2 = DPs[1] + i2;
-		else
-			Temp2 = DPs[0] + i2;
-		if (Temp2 < DPs[2] + i2)
-			Temp2 = DPs[2] + i2;;
-
-		if (DPs[1] + i3 < DPs[2] + i3)
-			Temp3 = DPs[2] + i3;
-		else
-			Temp3 = DPs[1] + i3;
-
-		DPs[0] = Temp1;
-		DPs[1] = Temp2;
-		DPs[2] = Temp3;
+    for (int i = 0; i < N; ++i)
+    {
+        cin >> g_DP[i][0] >> g_DP[i][1] >> g_DP[i][2];
+    }
 
 
-
-		if (MinDPs[0] + i1 > MinDPs[1] + i1)
-			Temp1 = MinDPs[1] + i1;
-		else
-			Temp1 = MinDPs[0] + i1;
-
-		if (MinDPs[0] + i2 > MinDPs[1] + i2)
-			Temp2 = MinDPs[1] + i2;
-		else
-			Temp2 = MinDPs[0] + i2;
-		if (Temp2 > MinDPs[2] + i2)
-			Temp2 = MinDPs[2] + i2;;
-
-		if (MinDPs[1] + i3 > MinDPs[2] + i3)
-			Temp3 = MinDPs[2] + i3;
-		else
-			Temp3 = MinDPs[1] + i3;
-
-		MinDPs[0] = Temp1;
-		MinDPs[1] = Temp2;
-		MinDPs[2] = Temp3;
-
-	}
-
-	int iTempNum = max(DPs[0], DPs[1]);
-	iTempNum = max(iTempNum, DPs[2]);
-	cout << iTempNum << " ";
-
-	iTempNum = min(MinDPs[0], MinDPs[1]);
-	iTempNum = min(iTempNum, MinDPs[2]);
-	cout << iTempNum;
+    int MaxTemp[3] = { g_DP[0][0], g_DP[0][1],g_DP[0][2] };
+    int MinTemp[3] = { g_DP[0][0], g_DP[0][1],g_DP[0][2] };
+    
+    for (int i = 1; i < N; ++i)
+    {
+        int Temp[3] = { MaxTemp[0], MaxTemp[1],MaxTemp[2] };
+        MaxTemp[0] = g_DP[i][0] + max(Temp[0], Temp[1]);
+        MaxTemp[1] = max(Temp[0], Temp[1]);
+        MaxTemp[1] = g_DP[i][1] + max(MaxTemp[1], Temp[2]);
+        MaxTemp[2] = g_DP[i][2] + max(Temp[1], Temp[2]);
 
 
-	return 0;
+        int Temp1[3] = { MinTemp[0], MinTemp[1],MinTemp[2] };
+
+        MinTemp[0] = g_DP[i][0] + min(Temp1[0], Temp1[1]);
+        MinTemp[1] = min(Temp1[0], Temp1[1]);
+        MinTemp[1] = g_DP[i][1] + min(MinTemp[1], Temp1[2]);
+        MinTemp[2] = g_DP[i][2] + min(Temp1[1], Temp1[2]);
+
+    }
+
+
+    int Max = max(MaxTemp[0], MaxTemp[1]);
+    Max = max(Max, MaxTemp[2]);
+    int Min = min(MinTemp[0], MinTemp[1]);
+    Min = min(Min, MinTemp[2]);
+
+    cout << Max << " " << Min;
+
+
+    return 0;
 }
