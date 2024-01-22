@@ -1,46 +1,46 @@
 #include <iostream>
 #include <vector>
-#include <list>
-#include <string>
+#include <queue>
 #include <algorithm>
+#include <set>
+#include "limits.h"
 
 using namespace std;
 
+
 int main()
 {
-	ios_base::sync_with_stdio(false);
-	cin.tie(NULL);
+	ios::sync_with_stdio(false);
+	cin.tie(0); cout.tie(0);
 
-	int iN, iM;
-	cin >> iN >> iM;
+	int N, M;
+	cin >> N >> M;
 	vector<int> Inputs;
-	for (int i = 0; i < iN; ++i)
+	for (int i = 0; i < N; ++i)
 	{
-		int iTemp;
-		cin >> iTemp;
-		Inputs.push_back(iTemp);
+		int Temp;
+		cin >> Temp;
+		Inputs.push_back(Temp);
 	}
 
 	vector<int> Diss;
-	for (int i = 1; i < iN; ++i)
+	for (int i = 1; i < N; ++i)
 	{
-		Diss.push_back(Inputs[i] - Inputs[i - 1]);
+		int Dis = Inputs[i] - Inputs[i - 1];
+		Diss.push_back(Dis);
 	}
 
 	sort(Diss.begin(), Diss.end());
 
-	for (int i = 0; i < iM - 1; ++i)
+	M -= 1;
+
+	int Ans = 0;
+	for (int i = 0; i < Diss.size() - M; ++i)
 	{
-		Diss.pop_back();
+		Ans += Diss[i];
 	}
 
-	int iAns = 0;
-	for (int i = 0; i < Diss.size(); ++i)
-	{
-		iAns += Diss[i];
-	}
-
-	cout << iAns;
+	cout << Ans;
 
 	return 0;
 }
