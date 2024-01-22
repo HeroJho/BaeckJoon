@@ -1,86 +1,94 @@
 #include <iostream>
 #include <vector>
-#include <list>
-#include <string>
 #include <queue>
-#include <algorithm>
-#include "limits.h"
-#include <math.h>
+#include <cmath>
+#include <climits>
 
 using namespace std;
 
-int g_iN;
+
+int g_N;
 int g_Matrix[20][20] = { 0 };
-bool g_Ts[20] = { false };
-int g_iAns = INT_MAX;
+bool g_Visited[20] = { false };
 
-void DFS(int iDepth, int iPreIndex)
+vector<int> g_Team1;
+vector<int> g_Team2;
+
+int g_Ans = INT_MAX;
+
+void Check()
 {
-	if (iDepth == g_iN / 2)
-	{
-		vector<int> L, R;
-		for (int i = 0; i < g_iN; ++i)
-		{
-			if (g_Ts[i])
-				L.push_back(i);
-			else
-				R.push_back(i);
+    g_Team2.clear();
+    for (int i = 0; i < g_N; ++i)
+    {
+        if (g_Visited[i])
+            continue;
+        g_Team2.push_back(i);
+    }
 
-		}
+    int Sum1 = 0;
+    int Sum2 = 0;
+    for (int i = 0; i < g_Team1.size(); ++i)
+    {
+        for (int j = i + 1; j < g_Team1.size(); ++j)
+        {
+            Sum1 += g_Matrix[g_Team1[i]][g_Team1[j]];
+            Sum1 += g_Matrix[g_Team1[j]][g_Team1[i]];
 
-		int iLSum = 0;
-		for (int i = 0; i < L.size(); ++i)
-		{
-			for (int j = i + 1; j < L.size(); ++j)
-			{
-				iLSum += g_Matrix[L[i]][L[j]];
-				iLSum += g_Matrix[L[j]][L[i]];
-			}
-		}
+            Sum2 += g_Matrix[g_Team2[i]][g_Team2[j]];
+            Sum2 += g_Matrix[g_Team2[j]][g_Team2[i]];
+        }
+    }
 
-		int iRSum = 0;
-		for (int i = 0; i < R.size(); ++i)
-		{
-			for (int j = i + 1; j < R.size(); ++j)
-			{
-				iRSum += g_Matrix[R[i]][R[j]];
-				iRSum += g_Matrix[R[j]][R[i]];
-			}
-		}
-
-		int iDis = abs(iRSum - iLSum);
-		if (g_iAns > iDis)
-			g_iAns = iDis;
-
-		return;
-	}
-
-	for (int i = iPreIndex + 1; i < g_iN; ++i)
-	{
-		g_Ts[i] = true;
-		DFS(iDepth + 1, i);
-		g_Ts[i] = false;
-	}
+    int ASum = abs(Sum1 - Sum2);
+    if (ASum < g_Ans)
+        g_Ans = ASum;
 
 }
 
+void DFS(int Depth, int Start)
+{
+    if (Depth >= g_N / 2)
+    {
+        Check();
+        return;
+    }
+
+
+    for (int i = Start; i < g_N; ++i)
+    {
+        if (g_Visited[i])
+            continue;
+
+        g_Team1.push_back(i);
+        g_Visited[i] = true;
+        DFS(Depth + 1, i + 1);
+        g_Team1.pop_back();
+        g_Visited[i] = false;
+
+    }
+
+}
+
+
 int main()
 {
-	ios_base::sync_with_stdio(false);
-	cin.tie(NULL);
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
 
-	cin >> g_iN;
-	for (int i = 0; i < g_iN; ++i)
-	{
-		for (int j = 0; j < g_iN; ++j)
-		{
-			cin >> g_Matrix[i][j];
-		}
-	}
+    cin >> g_N;
+    for (int i = 0; i < g_N; ++i)
+    {
+        for (int j = 0; j < g_N; ++j)
+        {
+            cin >> g_Matrix[i][j];
+        }
+    }
 
-	DFS(0, -1);
 
-	cout << g_iAns;
+    DFS(0, 0);
+ 
+    cout << g_Ans;
 
-	return 0;
+    return 0;
 }
