@@ -1,11 +1,11 @@
 #include <iostream>
 #include <vector>
-#include <list>
-#include <string>
-#include <algorithm>
 #include <queue>
+#include <algorithm>
+#include <set>
 #include "limits.h"
 
+#define MAX 1001
 #define LL long long
 
 using namespace std;
@@ -13,67 +13,66 @@ using namespace std;
 class Func
 {
 public:
-	bool operator() (pair<int , LL> L, pair<int, LL> R)
+	bool operator()(pair<int, LL> L, pair<int, LL> R)
 	{
 		return L.second > R.second;
 	}
 };
 
-int g_iN, g_iM;
-int g_Matrix[1001][1001] = { 0 };
-LL g_DP[1001] = { 0 };
-vector<int> g_Load[1001];
-int g_iStart, g_iEnd;
+int g_N, g_M;
+int g_S, g_E;
+int g_Matrix[MAX][MAX] = {0};
+
+LL g_DP[MAX] = { -1 };
+int g_Par[MAX] = { -1 };
 
 void Reset()
 {
-	for (int i = 1; i <= g_iN; ++i)
+	for (int i = 0; i < MAX; ++i)
 	{
-		g_DP[i] = LLONG_MAX;
+		g_DP[i] = -1;
+		g_Par[i] = -1;
 	}
 
-	for (int i = 1; i <= g_iN; ++i)
+	for (int i = 0; i < MAX; ++i)
 	{
-		for (int j = 1; j <= g_iN; ++j)
+		for (int j = 0; j < MAX; ++j)
 		{
 			g_Matrix[i][j] = INT_MAX;
 		}
 	}
+
 }
 
-void Dji()
+void Dij()
 {
-	priority_queue<pair<int , LL>, vector<pair<int, LL>>, Func> Qs;
-	Qs.push({g_iStart, 0});
-	g_DP[g_iStart] = 0;
-	g_Load[g_iStart].push_back(g_iStart);
+	priority_queue<pair<int, LL>, vector<pair<int, LL>>, Func> Qs;
+	Qs.push({ g_S,0 });
+	g_DP[g_S] = 0;
 
 	while (!Qs.empty())
 	{
-		pair<int , LL> Cur = Qs.top();
+		pair<int, LL> Cur = Qs.top();
 		Qs.pop();
 
-		for (int i = 1; i <= g_iN; ++i)
+		if (Cur.first == g_E)
+			return;
+
+		for (int i = 1; i <= g_N; ++i)
 		{
 			if (INT_MAX == g_Matrix[Cur.first][i])
 				continue;
 
-			LL iNexDis = g_Matrix[Cur.first][i] + Cur.second;
-			if (g_DP[i] > iNexDis)
-			{
-				g_DP[i] = iNexDis;
-				
-				g_Load[i].clear();
-				g_Load[i].shrink_to_fit();
-				for (int j = 0; j < g_Load[Cur.first].size(); ++j)
-				{
-					g_Load[i].push_back(g_Load[Cur.first][j]);
-				}
-				g_Load[i].push_back(i);
+			int Nex = i;
+			LL NexValue = g_Matrix[Cur.first][i] + Cur.second;
 
-				Qs.push({ i, iNexDis });
+			if (g_DP[Nex] != -1 && g_DP[Nex] <= NexValue)
+				continue;
+			g_DP[Nex] = NexValue;
 
-			}
+			g_Par[Nex] = Cur.first;
+
+			Qs.push({ Nex, NexValue });
 
 		}
 
@@ -83,31 +82,41 @@ void Dji()
 
 int main()
 {
-	ios_base::sync_with_stdio(false);
-	cin.tie(NULL);
+	ios::sync_with_stdio(false);
+	cin.tie(0); cout.tie(0);
 
-	cin >> g_iN >> g_iM;
 	Reset();
-	for (int i = 0; i < g_iM; ++i)
+
+	cin >> g_N >> g_M;
+	for (int i = 0; i < g_M; ++i)
 	{
-		int iStart, iEnd, iValue;
-		cin >> iStart >> iEnd >> iValue;
-		if(g_Matrix[iStart][iEnd] > iValue)
-			g_Matrix[iStart][iEnd] = iValue;
+		int Start, End, Value;
+		cin >> Start >> End >> Value;
+		if (g_Matrix[Start][End] > Value)
+			g_Matrix[Start][End] = Value;
+
 	}
-	cin >> g_iStart >> g_iEnd;
+	cin >> g_S >> g_E;
 
-	Dji();
 
-	cout << g_DP[g_iEnd] << '\n';
-	cout << g_Load[g_iEnd].size() << '\n';
-	
-	for (int i = 0; i < g_Load[g_iEnd].size(); ++i)
+	Dij();
+
+	int Count = 0;
+	int Num = g_E;
+	vector<int> Ways;
+	while (Num != -1)
 	{
-		cout << g_Load[g_iEnd][i] << ' ';
+		Ways.push_back(Num);
+		Num = g_Par[Num];
 	}
 
-
+	cout << g_DP[g_E] << endl;
+	cout << Ways.size() << endl;
+	for (int i = Ways.size() - 1; i >= 0; --i)
+	{
+		cout << Ways[i] << ' ';
+	}
 
 	return 0;
 }
+
