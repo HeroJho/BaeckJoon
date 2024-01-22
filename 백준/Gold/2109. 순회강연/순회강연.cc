@@ -1,14 +1,13 @@
 #include <iostream>
 #include <vector>
-#include <list>
-#include <string>
-#include <algorithm>
 #include <queue>
+#include <algorithm>
+#include <set>
 #include "limits.h"
 
 using namespace std;
 
-class Fuc
+class Func
 {
 public:
 	bool operator()(pair<int, int> L, pair<int, int> R)
@@ -19,65 +18,54 @@ public:
 
 int main()
 {
-	ios_base::sync_with_stdio(false);
-	cin.tie(NULL);
+	ios::sync_with_stdio(false);
+	cin.tie(0); cout.tie(0);
 
-	int iN;
-	cin >> iN;
+	int N;
+	cin >> N;
 	vector<pair<int, int>> Inputs;
-	for (int i = 0; i < iN; ++i)
+	for (int i = 0; i < N; ++i)
 	{
-		pair<int, int> Temp; cin >> Temp.second >> Temp.first;
+		pair<int, int> Temp;
+		cin >> Temp.first >> Temp.second;
 		Inputs.push_back(Temp);
 	}
 
-	sort(Inputs.rbegin(), Inputs.rend());
-
-	priority_queue<pair<int, int>, vector<pair<int, int>>, Fuc> Qs;
-
-	if (iN == 0)
+	if (N == 0)
 	{
 		cout << 0;
 		return 0;
 	}
-	int iCurDay = Inputs[0].first;
-	Qs.push(Inputs[0]);
-	long long iAns = 0;
-	for (int i = 1; i < iN; ++i)
+
+	sort(Inputs.begin(), Inputs.end(), Func());
+
+	int Ans = 0;
+
+	int Day = Inputs.back().second;
+	priority_queue<int> Qs;
+
+	while (Day > 0)
 	{
-		if (iCurDay > Inputs[i].first)
+		while (!Inputs.empty())
 		{
-			
-			for (int j = iCurDay; j > Inputs[i].first; --j)
-			{
-				if (!Qs.empty())
-				{
-					iAns += Qs.top().second;
-					Qs.pop();
-				}
-			}
+			if (Day > Inputs.back().second)
+				break;
 
-			iCurDay = Inputs[i].first;
-
-			Qs.push(Inputs[i]);
+			Qs.push(Inputs.back().first);
+			Inputs.pop_back();
 		}
-		else
-		{
-			Qs.push(Inputs[i]);
-		}
-
-	}
-
-	for (int i = iCurDay; i >= 1; --i)
-	{
+		
+		// 확인한다
 		if (!Qs.empty())
 		{
-			iAns += Qs.top().second;
+			Ans += Qs.top();
 			Qs.pop();
 		}
+
+		--Day;
 	}
 
-	cout << iAns;
+	cout << Ans;
 
 	return 0;
 }
