@@ -1,9 +1,9 @@
 #include <iostream>
 #include <vector>
-#include <list>
-#include <string>
-#include <algorithm>
 #include <queue>
+#include <algorithm>
+#include <set>
+#include "limits.h"
 
 using namespace std;
 
@@ -18,46 +18,42 @@ public:
 
 int main()
 {
-	ios_base::sync_with_stdio(false);
-	cin.tie(NULL);
+	ios::sync_with_stdio(false);
+	cin.tie(0); cout.tie(0);
 
-	int iT;
-	cin >> iT;
+	int T;
+	cin >> T;
 
-	for (int t = 0; t < iT; ++t)
+	while (T--)
 	{
-
-
-		int iN;
-		cin >> iN;
-
+		int N;
+		cin >> N;
 		priority_queue<long long, vector<long long>, Func> Qs;
-		for (int i = 0; i < iN; ++i)
+		for (int i = 0; i < N; ++i)
 		{
-			int iTemp; cin >> iTemp;
-			Qs.push(iTemp);
+			long long Temp;
+			cin >> Temp;
+			Qs.push(Temp);
 		}
 
-		long long iAns = 0;
+		long long Ans = 0;
 		while (Qs.size() > 1)
 		{
-			long long iMin1, iMin2;
-
-			iMin1 = Qs.top();
+			// 두 개를 꺼낸다
+			// 합친다
+			// Qs에 넣는다
+			long long Num1 = Qs.top();
 			Qs.pop();
-			iMin2 = Qs.top();
+			long long Num2 = Qs.top();
 			Qs.pop();
 
-			iAns += iMin1 + iMin2;
-			Qs.push(iMin1 + iMin2);
+			long long Sum = Num1 + Num2;
+			Ans += Sum;
+			Qs.push(Sum);
 		}
 
-		cout << iAns << '\n';
-
-
+		cout << Ans << '\n';
 	}
-
-
 
 
 	return 0;
