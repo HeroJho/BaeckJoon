@@ -20,11 +20,10 @@ void DFS(int Depth, int Start, int Sum)
     }
 
 
-    for (int i = Start; i < g_Numbers.size(); ++i)
-    {
-        DFS(Depth + 1, i + 1, Sum + g_Numbers[i]);
-        DFS(Depth + 1, i + 1, Sum - g_Numbers[i]);
-    }
+
+    DFS(Depth + 1, Start + 1, Sum + g_Numbers[Start]);
+    DFS(Depth + 1, Start + 1, Sum - g_Numbers[Start]);
+
 
 }
 
@@ -38,3 +37,5 @@ int solution(vector<int> numbers, int target) {
 
     return g_Ans;
 }
+
+
