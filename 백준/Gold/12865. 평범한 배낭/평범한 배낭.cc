@@ -1,69 +1,59 @@
-#include <iostream>
+	//
+//  DFS_BOJ12865_평범한배낭.cpp
+//  Coding_Test_Practice
+//
+//  Created by 김난영 on 2021/08/11.
+//  Copyright © 2021 KimNanyoung. All rights reserved.
+//
+ 
+#include<iostream>
 #include <vector>
-#include <list>
-#include <string>
 #include <algorithm>
-
+#include <cmath>
+ 
 using namespace std;
-
-struct Item
-{
-	int iW = 0, iV = 0;
-	Item() {};
-	Item(int w, int v) : iW(w), iV(v) {};
-
-};
-
-int g_iN, g_iMaxW, g_iMaxV = 0;
-vector<Item> g_iItems;
-bool g_Visited[100] = { false };
-int g_DP[100001] = { 0 };
-
-void DFS(int iV, int iW)
-{
-
-	if (g_iMaxV < iV)
-		g_iMaxV = iV;
-
-	for (int i = 0; i < g_iItems.size(); ++i)
-	{
-		if (g_Visited[i])
-			continue;
-
-		int inV = iV + g_iItems[i].iV;
-		int inW = iW + g_iItems[i].iW;
-
-		if (inW > g_iMaxW)
-			continue;
-
-		if (g_DP[inW] >= inV)
-			continue;
-		g_DP[inW] = inV;
-
-		g_Visited[i] = true;
-		DFS(inV, inW);
-		g_Visited[i] = false;
-	}
+ 
+int N, K;
+int W[101] = {0,};
+int V[101] = {0,};
+int DP[101][100001];
+ 
+void dp(){
+    
+    for(int limit = 1; limit<=K; limit++){
+        for(int row = 1; row<=N; row++){
+            //1. 담을 수 없을 경우
+            if(W[row] > limit){
+                DP[row][limit] = DP[row-1][limit];
+            }
+            //2. 담을 수 있는 경우
+            else{
+                DP[row][limit] = max(DP[row-1][limit - W[row]] + V[row]  ,  DP[row-1][limit]);
+            }
+        }
+    }
+    
 }
-
-int main()
-{
-	ios_base::sync_with_stdio(false);
-	cin.tie(NULL);
-
-	cin >> g_iN >> g_iMaxW;
-
-	for (int i = 0; i < g_iN; ++i)
-	{
-		Item item;
-		cin >> item.iW >> item.iV;
-		g_iItems.push_back(item);
-	}
-
-	DFS(0, 0);
-
-	cout << g_iMaxV;
-
-
-	return 0;
+ 
+int main(){
+ 
+    cin >> N >> K;
+    for(int i = 1; i<=N; i++){
+        cin >> W[i] >> V[i];
+    }
+    
+	//초기화
+    for(int r=0; r<=N; r++)
+    {
+        DP[r][0] = 0;
+    }
+    for(int c = 0; c<=K; c++){
+        DP[0][c] = 0;
+    }
+ 
+    dp();
+ 
+    cout << DP[N][K];
+    
+    return 0;
 }
