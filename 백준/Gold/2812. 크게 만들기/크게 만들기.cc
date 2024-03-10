@@ -1,6 +1,10 @@
 #include <iostream>
-#include <stack>
-#include <string>
+#include <vector>
+#include <queue>
+#include <algorithm>
+#include <set>
+#include "limits.h"
+
 
 using namespace std;
 
@@ -8,75 +12,54 @@ using namespace std;
 
 int main()
 {
-	ios_base::sync_with_stdio(false);
-	cin.tie(NULL);
+	ios::sync_with_stdio(false);
+	cin.tie(0); cout.tie(0);
 
-	int iN, iCount;
-	cin >> iN >> iCount;
-	string sInput;
-	cin >> sInput;
+	// i 보다 i-1 크면 i를 뺀다
+	
 
-	stack<int> Qs;
-	// 2 1     21
-	for (int i = 0; i < iN; ++i)
+	int N, K;
+	cin >> N >> K;
+	string sS;
+	cin >> sS;
+
+	string Stack;
+	for (int i = 0; i < N; ++i)
 	{
-		int iNum = sInput[i] - '0';
-
-		if (iCount == 0)
+		if (K <= 0)
 		{
-			Qs.push(iNum);
+			Stack.push_back(sS[i]);
+			continue;
 		}
 
-		while (iCount > 0)
+		int CurNum = sS[i] - '0';
+
+		while (!Stack.empty())
 		{
-
-			if (!Qs.empty())
+			int TopNum = Stack.back() - '0';
+			if (TopNum < CurNum)
 			{
-				if (Qs.top() < iNum)
-				{
-					Qs.pop();
-					--iCount;
-
-					if (iCount == 0)
-					{
-						Qs.push(iNum);
-					}
-				}
-				else
-				{
-					Qs.push(iNum);
+				Stack.pop_back();
+				K--;
+				if (K <= 0)
 					break;
-				}
+
+				continue;
 			}
-			else
-			{
-				Qs.push(iNum);
-				break;
-			}
+
+			break;
 		}
+
+		Stack.push_back(CurNum + '0');
 	}
 
-	if (iCount > 0)
+	// 끝났는데 더 빼야하면?  뒤에서 나머지 뺀다
+	for (int i = 0; i < K; ++i)
 	{
-		for (int i = 0; i < iCount; ++i)
-		{
-			Qs.pop();
-		}
+		Stack.pop_back();
 	}
 
-	int iSize = Qs.size();
-	stack<int> Ss;
-	for (int i = 0; i < iSize; ++i)
-	{
-		Ss.push(Qs.top());
-		Qs.pop();
-	}
-	for (int i = 0; i < iSize; ++i)
-	{
-		cout << Ss.top();
-		Ss.pop();
-	}
-
+	cout << Stack;
 
 	return 0;
 }
