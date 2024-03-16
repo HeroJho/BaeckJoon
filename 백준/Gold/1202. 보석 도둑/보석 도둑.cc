@@ -1,68 +1,66 @@
 #include <iostream>
-#include <list>
 #include <vector>
 #include <queue>
 #include <algorithm>
 
 using namespace std;
 
-class Fuc
-{
-public:
-	bool operator()(pair<int, int> L, pair<int, int> R)
-	{
-		return L.first < R.first;
-	}
-};
-
-class Fuc1
-{
-public:
-	bool operator()(pair<int, int> L, pair<int, int> R)
-	{
-		return L.second < R.second;
-	}
-};
-
 int main()
 {
-	int iN = 0, iK = 0;
-	cin >> iN >> iK;
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
 
-	list<pair<int, int>> Jus;
-	for (int i = 0; i < iN; ++i)
-	{
-		pair<int, int> Ju;		// 무게, 돈
-		cin >> Ju.first >> Ju.second;
-		Jus.push_back(Ju);
-	}
-	vector<int> Back(iK);
-	for (int i = 0; i < iK; ++i)
-	{
-		cin >> Back[i];
-	}
 
-	Jus.sort(Fuc());
-	sort(Back.begin(), Back.end());
-	
-	long long iAns = 0;
-	priority_queue<pair<int, int>, vector<pair<int, int>>, Fuc1> Qs;
-	for (int i = 0; i < iK; ++i)
-	{
-		while (!Jus.empty() && Back[i] >= Jus.front().first)
-		{
-			Qs.push(Jus.front());
-			Jus.pop_front();
-		}
+    int N, K;
+    cin >> N >> K;
+    vector<pair<int, int>> MVs;
+    for (int i = 0; i < N; ++i)
+    {
+        int M, V;
+        cin >> M >> V;
+        MVs.push_back({M, V});
+    }
 
-		if (!Qs.empty())
-		{
-			iAns +=	Qs.top().second;
-			Qs.pop();
-		}
-	}
+    vector<int> Ms;
+    for (int i = 0; i < K; ++i)
+    {
+        int Temp;
+        cin >> Temp;
+        Ms.push_back(Temp);
+    }
 
-	cout << iAns;
+    // 무게 오름차순
+    sort(MVs.begin(), MVs.end());
+    // 가방 무게 오름차순
+    sort(Ms.begin(), Ms.end());
 
-	return 0;
+    // i 가방 무게만큼 Q에 넣는다
+    // Top을 고른다
+    long long Ans = 0;
+
+    priority_queue<int> Qs;
+    int MVIndex = 0;
+    for (int i = 0; i < K; ++i)
+    {
+        int BagM = Ms[i];
+        while (MVIndex < N && MVs[MVIndex].first <= BagM)
+        {
+            Qs.push(MVs[MVIndex].second);
+            ++MVIndex;
+        }
+        
+        // 넣을 보석이 없거나
+        // 제한 가방까지 다 넣었을 때
+        //  맨 위를 뺀다
+        if (!Qs.empty())
+        {
+            Ans += Qs.top();
+            Qs.pop();
+        }
+
+    }
+
+    cout << Ans;
+
+    return 0;
 }
