@@ -1,84 +1,97 @@
 #include <iostream>
 #include <vector>
 #include <queue>
+#include <algorithm>
+#include <set>
+#include "limits.h"
 
 using namespace std;
 
-
-int g_N, g_M;
-int g_Matrix[500][10000] = { 0 };
-int g_DP[500][10000] = { 0 };
-
-int g_DirX[] = { 0, 0, -1, 1 };
-int g_DirY[] = { -1, 1, 0, 0 };
+int N, M;
+int Matrix[500][500] = { 0 };
+int DP[500][500] = { -1 };
+int DirX[] = { 0, 0, -1, 1 };
+int DirY[] = { -1, 1, 0, 0 };
 
 void Reset()
 {
-    for (int y = 0; y < g_M; ++y)
-    {
-        for (int x = 0; x < g_N; ++x)
-        {
-            g_DP[y][x] = -1;
-        }
-    }
+	for (int i = 0; i < 500; ++i)
+	{
+		for (int j = 0; j < 500; ++j)
+		{
+			DP[i][j] = -1;
+		}
+	}
 }
 
 bool IsIn(int X, int Y)
 {
-    return X >= 0 && X < g_N && Y >= 0 && Y < g_M;
+	return X >= 0 && X < M && Y >= 0 && Y < N;
 }
 
-
-int DFS(pair<int ,int> Pos)
+int DFS(pair<int ,int> CurPos)
 {
-    if(Pos.first == g_N - 1 && Pos.second == g_M - 1)
-    {
-        return 1;
-    }
-    else if (g_DP[Pos.second][Pos.first] != - 1)
-    {
-        return g_DP[Pos.second][Pos.first];
-    }
+	// 도착했다면
+	if (CurPos.first == M - 1 && CurPos.second == N - 1)
+	{
+		return 1;
+	}
 
-    g_DP[Pos.second][Pos.first] = 0;
+	// 도착 길이 있다
+	if (DP[CurPos.second][CurPos.first] != -1)
+	{
+		return DP[CurPos.second][CurPos.first];
+	}
+	DP[CurPos.second][CurPos.first] = 0;
 
-    for (int i = 0; i < 4; ++i)
-    {
-        int inX = g_DirX[i] + Pos.first;
-        int inY = g_DirY[i] + Pos.second;
 
-        if (!IsIn(inX, inY))
-            continue;
+	for (int i = 0; i < 4; ++i)
+	{
+		int nX = DirX[i] + CurPos.first;
+		int nY = DirY[i] + CurPos.second;
 
-        if (g_Matrix[inY][inX] >= g_Matrix[Pos.second][Pos.first])
-            continue;
-        
-        g_DP[Pos.second][Pos.first] += DFS({inX, inY});
+		if (!IsIn(nX, nY))
+			continue;
 
-    }
-    
-    return g_DP[Pos.second][Pos.first];
+		// 오르막이라면 넘긴다
+		if (Matrix[nY][nX] >= Matrix[CurPos.second][CurPos.first])
+			continue;
+
+		
+		DP[CurPos.second][CurPos.first] += DFS({ nX, nY });
+
+	}
+
+	
+	return DP[CurPos.second][CurPos.first];
 }
-
 
 int main()
 {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
+	ios::sync_with_stdio(false);
+	cin.tie(0); cout.tie(0);
 
-    cin >> g_M >> g_N;
-    for (int y = 0; y < g_M; ++y)
-    {
-        for (int x = 0; x < g_N; ++x)
-        {
-            cin >> g_Matrix[y][x];
-        }
-    }
+	Reset();
 
-    Reset();
-    DFS({0, 0});
+	cin >> N >> M;
 
-    cout << g_DP[0][0];
+	if (N == 1 && M == 1)
+	{
+		cout << 1;
+		return 0;
+	}
 
-    return 0;
+	for (int y = 0; y < N; ++y)
+	{
+		for (int x = 0; x < M; ++x)
+		{
+			cin >> Matrix[y][x];
+		}
+	}
+
+	DFS({0, 0});
+
+	cout << DP[0][0];
+
+	return 0;
 }
