@@ -1,88 +1,76 @@
 #include <iostream>
 #include <vector>
-#include <list>
-#include <string>
+#include <queue>
 #include <algorithm>
+#include <set>
+#include "limits.h"
 
 using namespace std;
 
-void Flip(int iIndex, string& sTemp)
+void Flip(int Index, string& Temp)
 {
-	if (iIndex - 1 >= 0)
+	for (int i = Index - 1; i <= Index + 1; ++i)
 	{
-		if (sTemp[iIndex-1] == '0')
-			sTemp[iIndex-1] = '1';
-		else
-			sTemp[iIndex-1] = '0';
-	}
+		if (i < 0 || i >= Temp.length())
+			continue;
 
-	if (iIndex + 1 < sTemp.size())
-	{
-		if (sTemp[iIndex+1] == '0')
-			sTemp[iIndex+1] = '1';
-		else
-			sTemp[iIndex+1] = '0';
+		if(Temp[i] == '0')
+			Temp[i] = '1';
+		else if (Temp[i] == '1')
+			Temp[i] = '0';
 	}
-
-	if (sTemp[iIndex] == '0')
-		sTemp[iIndex] = '1';
-	else
-		sTemp[iIndex] = '0';
 }
 
 int main()
 {
-	ios_base::sync_with_stdio(false);
-	cin.tie(NULL);
+	ios::sync_with_stdio(false);
+	cin.tie(0); cout.tie(0);
 
-	int iN;
-	cin >> iN;
-	string sInput;
-	string sDest;
-	cin >> sInput;
-	cin >> sDest;
+	int N;
+	cin >> N;
+	string Start, End;
+	cin >> Start >> End;
 
-	string sTemp = sInput;
-
-	int iAns = 0;
-	// 첫 전구를 안 누른 상태
-	for (int i = 1; i < iN; ++i)
+	// 0번째 안 누르고 시작
+	int Ans = 0;
+	string Temp = Start;
+	for (int i = 0; i < Temp.length() - 1; ++i)
 	{
-		if (sDest[i - 1] != sTemp[i - 1])
+		// 다르다면
+		if (Temp[i] != End[i])
 		{
-			Flip(i, sTemp);
-			++iAns;
+			Flip(i + 1, Temp);
+			Ans++;
 		}
 
-		if (sDest == sTemp)
+		if (Temp == End)
 		{
-			cout << iAns;
+			cout << Ans;
 			return 0;
 		}
 	}
 
-
-	sTemp = sInput;
-	iAns = 1;
-	// 첫 전구를 누른 상태
-	Flip(0, sTemp);
-	for (int i = 1; i < iN; ++i)
+	// 누르고 시작
+	Ans = 1;
+	Temp = Start;
+	Flip(0, Temp);
+	for (int i = 0; i < Temp.length() - 1; ++i)
 	{
-		if (sDest[i - 1] != sTemp[i - 1])
+		// 다르다면
+		if (Temp[i] != End[i])
 		{
-			Flip(i, sTemp);
-			++iAns;
+			Flip(i + 1, Temp);
+			Ans++;
 		}
 
-		if (sDest == sTemp)
+		if (Temp == End)
 		{
-			cout << iAns;
+			cout << Ans;
 			return 0;
 		}
 	}
 
 	cout << -1;
-
 
 	return 0;
 }
