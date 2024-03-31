@@ -7,106 +7,81 @@
 
 using namespace std;
 
-bool g_Nos[100001] = { false };
-
 class Func
 {
 public:
-	bool operator()(vector<int> L, vector<int> R)
+	bool operator()(pair<int, pair<int, int>> L, pair<int, pair<int, int>> R)
 	{
-		return L[0] > R[0];
+		return L.second.first > R.second.first;
 	}
 };
 
-class Func2
+int solution(vector<vector<int>> scores) 
 {
-public:
-	bool operator()(vector<int> L, vector<int> R)
-	{
-		return L[0] == R[0] && L[1] < R[1];
-	}
-};
-
-class Func3
-{
-public:
-	bool operator()(vector<int> L, vector<int> R)
-	{
-		return L[3] > R[3];
-	}
-};
-
-int solution(vector<vector<int>> scores) {
-	int answer = 0;
-
-	// 2 = 인덱스
+   
+	vector <pair<int, pair<int, int>>> Inputs;
 	for (int i = 0; i < scores.size(); ++i)
 	{
-		scores[i].push_back(i);
+		Inputs.push_back({ i, { scores[i][0], scores[i][1] }});
 	}
 
-	// 0 내림 1 오름
-	sort(scores.begin(), scores.end(), Func());
-	stable_sort(scores.begin(), scores.end(), Func2());
+	sort(Inputs.begin(), Inputs.end(), Func());
 
+	vector<pair<int, int>> Scores;
 
-	int Min = scores[0][1];
-	for (int i = 0; i < scores.size() - 1; ++i)
+	int Cur = -1;
+	int Max = 0;
+	int CurMax = -1;
+	for (int i = 0; i < Inputs.size(); ++i)
 	{
-		if (Min > scores[i][1])
+		// 이전과 first가 같다면 Min을 갱신
+		if (Cur == Inputs[i].second.first)
 		{
-			g_Nos[i] = true;
+			if (CurMax < Inputs[i].second.second)
+			{
+				CurMax = Inputs[i].second.second;
+			}
+		}
+		else
+		{
+			if(Max < CurMax)
+				Max = CurMax;
+			CurMax = Inputs[i].second.second;
+		
+			Cur = Inputs[i].second.first;
 		}
 
-		if (scores[i][0] != scores[i + 1][0])
+		if (Max <= Inputs[i].second.second)
 		{
-			if(Min < scores[i][1])
-				Min = scores[i][1];
+			// 넣는다
+			Scores.push_back({ Inputs[i].second.first + Inputs[i].second.second, Inputs[i].first });
 		}
-
 	}
 
-	if (Min > scores[scores.size() - 1][1])
+	sort(Scores.rbegin(), Scores.rend());
+
+	int Score = 1;
+	int Cnt = 1;
+	for (int i = 0; i < Scores.size() - 1; ++i)
 	{
-		g_Nos[scores.size()-1] = true;
-	}
-	
-
-
-	int Count = -1;
-	for (auto iter = scores.begin(); iter != scores.end();)
-	{
-		++Count;
-		if (g_Nos[Count])	
+		if (Scores[i].second == 0)
 		{
-			iter = scores.erase(iter);
-			continue;
+			return Score;
 		}
 
-		int Score = (*iter)[0] + (*iter)[1];
-		iter->push_back(Score);
-
-		++iter;
-	}
-
-	sort(scores.begin(), scores.end(), Func3());
-
-
-	int Rank = 0;
-	int PreScore = -1;
-	for (int i = 0; i < scores.size(); ++i)
-	{
-		if (PreScore != scores[i][3])
+		if (Scores[i].first == Scores[i + 1].first)
 		{
-			Rank = i + 1;
-			PreScore = scores[i][3];
+			++Cnt;
 		}
-
-		if (scores[i][2] == 0)
+		else
 		{
-			return Rank;
+			Score += Cnt;
+			Cnt = 1;
 		}
 	}
 
-	return -1;
+	if (Scores.back().second == 0)
+		return Score;
+
+    return -1;
 }
