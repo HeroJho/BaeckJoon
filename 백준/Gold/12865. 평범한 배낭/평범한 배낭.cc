@@ -1,59 +1,50 @@
-	//
-//  DFS_BOJ12865_평범한배낭.cpp
-//  Coding_Test_Practice
-//
-//  Created by 김난영 on 2021/08/11.
-//  Copyright © 2021 KimNanyoung. All rights reserved.
-//
- 
-#include<iostream>
+#include <iostream>
 #include <vector>
+#include <queue>
 #include <algorithm>
-#include <cmath>
- 
+#include <set>
+#include "limits.h"
+
 using namespace std;
- 
-int N, K;
-int W[101] = {0,};
-int V[101] = {0,};
-int DP[101][100001];
- 
-void dp(){
-    
-    for(int limit = 1; limit<=K; limit++){
-        for(int row = 1; row<=N; row++){
-            //1. 담을 수 없을 경우
-            if(W[row] > limit){
-                DP[row][limit] = DP[row-1][limit];
-            }
-            //2. 담을 수 있는 경우
-            else{
-                DP[row][limit] = max(DP[row-1][limit - W[row]] + V[row]  ,  DP[row-1][limit]);
-            }
-        }
-    }
-    
-}
- 
-int main(){
- 
-    cin >> N >> K;
-    for(int i = 1; i<=N; i++){
-        cin >> W[i] >> V[i];
-    }
-    
-	//초기화
-    for(int r=0; r<=N; r++)
-    {
-        DP[r][0] = 0;
-    }
-    for(int c = 0; c<=K; c++){
-        DP[0][c] = 0;
-    }
- 
-    dp();
- 
-    cout << DP[N][K];
-    
-    return 0;
+
+int DP[101][100001] = {0};
+
+int main()
+{
+	ios::sync_with_stdio(false);
+	cin.tie(0); cout.tie(0);
+
+	int N, K;
+	cin >> N >> K;
+
+	vector<pair<int, int>> Inputs;
+	for (int i = 0; i < N; ++i)
+	{
+		pair<int, int> Temp;
+		cin >> Temp.first >> Temp.second;
+		Inputs.push_back(Temp);
+	}
+
+	for (int e = Inputs[0].first; e <= K; ++e)
+	{
+		DP[0][e] = Inputs[0].second;
+	}
+
+
+	for (int i = 1; i < N; ++i)
+	{
+		for (int e = 0; e <= K; ++e)
+		{
+			if (e - Inputs[i].first < 0)
+				DP[i][e] = DP[i - 1][e];
+			else
+				DP[i][e] = max(DP[i - 1][e], DP[i - 1][e - Inputs[i].first] + Inputs[i].second);
+		}
+	}
+
+	cout << DP[N - 1][K];
+
+
+
+	return 0;
 }
