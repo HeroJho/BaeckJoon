@@ -1,69 +1,53 @@
 #include <iostream>
 #include <vector>
+#include <climits>
 #include <algorithm>
-#include <set>
+#include <queue>
 
 using namespace std;
 
 int main()
 {
-	int iN, iSen;
-	cin >> iN >> iSen;
-	vector<int> Poss;
-	for (int i = 0; i < iN; ++i)
-	{
-		int iTemp;
-		cin >> iTemp;
-		Poss.push_back(iTemp);
-	}
-	if (iN <= iSen)
-	{
-		cout << 0;
-		return 0;
-	}
+    ios::sync_with_stdio(false);
+    cin.tie(NULL); cout.tie(NULL);
 
-	sort(Poss.begin(), Poss.end());
 
-	vector<int> Diss;
-	vector<int> TempDiss;
-	multiset<int> MaxDis;
+    int N, K;
+    cin >> N >> K;
+    vector<int> Inputs;
+    for (int i = 0; i < N; ++i)
+    {
+        int Temp;
+        cin >> Temp;
+        Inputs.push_back(Temp);
+    }
 
-	Diss.push_back(0);
-	for (int i = 0; i < iN - 1; ++i)
-	{
-		Diss.push_back(Poss[i + 1] - Poss[i]);
-		TempDiss.push_back(Poss[i + 1] - Poss[i]);
-	}
+    sort(Inputs.begin(), Inputs.end());
 
-	sort(TempDiss.rbegin(), TempDiss.rend());
-	// iSen - 1 개의 내림차순 Dis를 구한다.
-	for (int i = 0; i < iSen - 1; ++i)
-	{
-		MaxDis.emplace(TempDiss[i]);
-	}
+    priority_queue<int> Qs;
+    for (int i = 1; i < N; ++i)
+    {
+        if (Inputs[i] == Inputs[i - 1])
+            continue;
 
-	int iAns = 0;
-	int iSum = 0;
-	for (int i = 0; i < iN; ++i)
-	{
-		// 찾았다면
-		auto iter = MaxDis.find(Diss[i]);
-		if (iter != MaxDis.end())
-		{
-			MaxDis.erase(iter);
-			iAns += iSum;
-			iSum = 0;
-		}
-		else
-		{
-			iSum += Diss[i];
-		}
+        int Dis = abs(Inputs[i] - Inputs[i - 1]);
+        Qs.push(Dis);
+    }
 
-	}
+    for (int i = 0; i < K-1; ++i)
+    {
+        if(!Qs.empty())
+            Qs.pop();
+    }
 
-	iAns += iSum;
+    int Ans = 0;
+    while (!Qs.empty())
+    {
+        Ans += Qs.top();
+        Qs.pop();
+    }
 
-	cout << iAns;
+    cout << Ans;
 
-	return 0;
+    return 0;
 }
