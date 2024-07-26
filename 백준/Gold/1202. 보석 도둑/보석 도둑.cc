@@ -1,66 +1,89 @@
 #include <iostream>
 #include <vector>
+#include <climits>
 #include <queue>
 #include <algorithm>
 
 using namespace std;
 
+class Func
+{
+public:
+    bool operator() (int X, int Y)
+    {
+        return X < Y;
+    }
+};
+
 int main()
 {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
+    ios::sync_with_stdio(false);
+    cin.tie(NULL); cout.tie(NULL);
 
 
     int N, K;
     cin >> N >> K;
-    vector<pair<int, int>> MVs;
+
+    vector<pair<int, int>> Jus;
     for (int i = 0; i < N; ++i)
     {
         int M, V;
         cin >> M >> V;
-        MVs.push_back({M, V});
+
+        Jus.push_back({M, V});
     }
 
-    vector<int> Ms;
+    vector<int> Backs;
     for (int i = 0; i < K; ++i)
     {
         int Temp;
         cin >> Temp;
-        Ms.push_back(Temp);
+
+        Backs.push_back(Temp);
     }
 
-    // 무게 오름차순
-    sort(MVs.begin(), MVs.end());
-    // 가방 무게 오름차순
-    sort(Ms.begin(), Ms.end());
 
-    // i 가방 무게만큼 Q에 넣는다
-    // Top을 고른다
+    priority_queue<int, vector<int>, Func> Qs;
+
+    // 가방 오름차순
+    sort(Backs.begin(), Backs.end());
+    // 보석 무게 오름차순
+    sort(Jus.begin(), Jus.end());
+
     long long Ans = 0;
-
-    priority_queue<int> Qs;
-    int MVIndex = 0;
-    for (int i = 0; i < K; ++i)
+    int Index = 0;
+    for (int i = 0; i < Backs.size(); ++i)
     {
-        int BagM = Ms[i];
-        while (MVIndex < N && MVs[MVIndex].first <= BagM)
-        {
-            Qs.push(MVs[MVIndex].second);
-            ++MVIndex;
-        }
+        int CurBack = Backs[i];
+
+        // 해당 가방에 넣을 수 있다면 Q에 다 넣는다       
         
-        // 넣을 보석이 없거나
-        // 제한 가방까지 다 넣었을 때
-        //  맨 위를 뺀다
+        while (Index < Jus.size())
+        {
+            if (CurBack >= Jus[Index].first)
+            {
+                Qs.push(Jus[Index].second);
+                ++Index;
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        // 제일 큰 보석을 꺼낸다
         if (!Qs.empty())
         {
-            Ans += Qs.top();
+            int Top = Qs.top();
             Qs.pop();
+
+            Ans += Top;
         }
 
     }
 
     cout << Ans;
+
 
     return 0;
 }
