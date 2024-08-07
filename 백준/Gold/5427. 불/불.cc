@@ -14,7 +14,7 @@ struct Data
 int N;
 int X, Y;
 vector<string> Matrix;
-bool FireMatrix[1005][1005] = {false};
+
 
 int DirX[] = { 0, 0, -1, 1 };
 int DirY[] = { -1, 1, 0, 0 };
@@ -52,7 +52,6 @@ int BFS()
     }
 
 
-
     queue<Data> Qs;
 
     for (int i = 0; i < FirePoss.size(); ++i)
@@ -61,7 +60,6 @@ int BFS()
     }
 
     Qs.push({ true, BPos });
-
 
 
 
@@ -154,12 +152,7 @@ int main()
         else
             cout << Ans << '\n';
 
-
     }
-
-
-
-
 
     return 0;
 }
