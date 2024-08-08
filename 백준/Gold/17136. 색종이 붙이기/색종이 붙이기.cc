@@ -1,8 +1,4 @@
 #include <iostream>
-#include <vector>
-#include <queue>
-#include <algorithm>
-#include <set>
 #include "limits.h"
 
 using namespace std;
@@ -16,8 +12,6 @@ void Reset()
 {
 	for (int i = 1; i <= 5; ++i)
 		g_Count[i] = 5;
-
-
 }
 
 bool IsIn(int X, int Y)
@@ -45,12 +39,8 @@ bool Check(pair<int ,int> Pos, int Dis)
 void Fill(pair<int ,int> Pos, int Dis, int FillNum)
 {
 	for (int i = Pos.first; i < Pos.first + Dis; ++i)
-	{
 		for (int j = Pos.second; j < Pos.second + Dis; ++j)
-		{
 			g_Matrix[i][j] = FillNum;
-		}
-	}
 }
 
 bool CheckEnd()
@@ -107,13 +97,13 @@ void DFS(int Depth)
 
 			}
 
+            // 가장 좌상단의 좌표에서 5종류의 색종이를 채워봤다면 이후의 좌표는 확인할 필요없다
 			return;
 
 		}
 	}
 
 }
-
 
 int main()
 {
@@ -123,12 +113,9 @@ int main()
 	Reset();
 
 	for (int i = 0; i < 10; ++i)
-	{
 		for (int j = 0; j < 10; ++j)
-		{
 			cin >> g_Matrix[i][j];
-		}
-	}
+
 
 	DFS(0);
 
