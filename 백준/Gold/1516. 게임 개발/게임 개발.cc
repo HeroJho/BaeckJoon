@@ -14,24 +14,10 @@ public:
     }
 };
 
-
 int N;
 vector<pair<int, int>> Matrix[501];
-vector<int> InvMatrix[501];
 int DP[501] = { 0 };
 
-
-bool CanVisited(int Index)
-{
-    for (int i = 0; i < InvMatrix[Index].size(); ++i)
-    {
-        int Par = InvMatrix[Index][i];
-        if (DP[Par] == -1)
-            return false;
-    }
-
-    return true;
-}
 
 void Dij(vector<int> Starts)
 {
@@ -56,9 +42,6 @@ void Dij(vector<int> Starts)
             int nIndex = Matrix[CurIndex][i].first;
             int nValue = CurValue + Matrix[CurIndex][i].second;
 
-            // 사전 건물들 체크
-            //if (!CanVisited(nIndex))
-            //    continue;
 
             if (DP[nIndex] >= nValue)
                 continue;
@@ -100,7 +83,6 @@ int main()
         else
         {
             Matrix[Next].push_back({ i, Value });
-            InvMatrix[i].push_back(Next);
 
             while (true)
             {
@@ -109,7 +91,6 @@ int main()
                     break;
 
                 Matrix[End].push_back({ i, Value });
-                InvMatrix[i].push_back(End);
             }
 
         }
