@@ -1,7 +1,6 @@
 #include <iostream>
 #include <vector>
 #include <queue>
-#include <climits>
 #include <algorithm>
 
 using namespace std;
@@ -18,21 +17,12 @@ public:
 int N, M;
 
 vector<pair<int, int>> Matrix[100001];
-int DP[100001] = { INT_MAX };
-
-void Reset()
-{
-	for (int i = 0; i < 100001; ++i)
-	{
-		DP[i] = INT_MAX;
-	}
-}
+bool Visited[100001] = { false };
 
 
 void Dij()
 {
 	vector<int> Lines;
-	Reset();
 
 	priority_queue<pair<int, int>, vector<pair<int, int>>, Func> Qs;
 	Qs.push({ 0,1 });
@@ -44,9 +34,9 @@ void Dij()
 		Qs.pop();
 
 		
-		if (DP[CurIndex] != INT_MAX)
+		if (Visited[CurIndex])
 			continue;
-		DP[CurIndex] = 0;
+		Visited[CurIndex] = true;
 
 		Lines.push_back(CurValue);
 
