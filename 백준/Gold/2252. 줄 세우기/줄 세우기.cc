@@ -32,6 +32,7 @@ int main()
             Qs.push(i);
     }
 
+    // 반복한다
     while (!Qs.empty())
     {
         int Cur = Qs.front();
