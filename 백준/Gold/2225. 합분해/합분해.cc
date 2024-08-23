@@ -1,42 +1,29 @@
 #include <iostream>
-#include <vector>
-#include <climits>
 
 using namespace std;
 
+int N,K;
+long dp[201][201];
+long DIV = 1000000000;
+
 int main()
 {
-    ios::sync_with_stdio(false);
-    cin.tie(NULL); cout.tie(NULL);
-
-
-    int N, K;
+    ios_base::sync_with_stdio(0);
+    cin.tie(0), cout.tie(0);
+    
     cin >> N >> K;
 
-    // DP[k][n] = K개를 더해서 합이 N일 경우
-    int DP[201][201] = { 0 };
-    
-    for (int i = 0; i <= N; ++i)
-    {
-        DP[1][i] = 1;
-    }
-   
+    dp[0][0] = 1;
 
-    for (int k = 1; k <= K; ++k)
-    {
-        for (int n = 0; n <= N; ++n)
-        {
-            for (int i = 0; i <= n; ++i)
-            {
-                DP[k][n] += DP[k - 1][n - i];
-                DP[k][n] %= 1000000000;
-            }
+    for (int i = 1; i <= K; i++) {
+        for (int j = 0; j <= N; j++) {
+            for (int k = 0; k <= j; k++) dp[i][j] += dp[i-1][k]; 
+            
+            dp[i][j] %= DIV;
         }
     }
 
-
-    cout << DP[K][N];
-
+    cout << dp[K][N];
 
     return 0;
 }
