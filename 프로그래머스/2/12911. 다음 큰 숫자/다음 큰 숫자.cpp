@@ -3,29 +3,35 @@
 
 using namespace std;
 
-int totwo(int n)
+int ToBir(int N)
 {
-    int cnt=0;
+    int Cnt=0;
     
-    while(n!=0)
+    while(N!=0)
     {
-        if(n%2==1) 
-            cnt++;
+        if(N%2==1) 
+            Cnt++;
         
-        n/=2;
+        N/=2;
     }
     
-    return cnt;
+    return Cnt;
 }
 
 int solution(int n) 
 {
-    int m=totwo(n);
+    int M=ToBir(n);
     n++;
     
-    while(totwo(n)!=m)
+    while(ToBir(n)!=M)
     {
         n++;
+    }
+    
+    int Sum = 0;
+    for(int i = 0; i < 100000; ++i)
+    {
+        Sum += i;
     }
     
     return n;
