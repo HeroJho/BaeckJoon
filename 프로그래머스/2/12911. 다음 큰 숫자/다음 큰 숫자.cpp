@@ -28,11 +28,5 @@ int solution(int n)
         n++;
     }
     
-    int Sum = 0;
-    for(int i = 0; i < 100000; ++i)
-    {
-        Sum += i;
-    }
-    
     return n;
 }
