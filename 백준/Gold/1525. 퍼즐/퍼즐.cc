@@ -1,10 +1,6 @@
 #include <iostream>
-#include <vector>
-#include <list>
 #include <string>
 #include <queue>
-#include <algorithm>
-#include "limits.h"
 #include <map>
 
 using namespace std;
@@ -23,13 +19,10 @@ bool IsIn(int iX, int iY)
 void MtoS(string& sS)
 {
 	for (int i = 0; i < 3; ++i)
-	{
 		for (int j = 0; j < 3; ++j)
-		{
 			sS.push_back(g_M[i][j] + '0');
-		}
-	}
 }
+
 pair<int ,int> StoM(const string& sS)
 {
 	pair<int, int> ZPos;
@@ -66,6 +59,10 @@ int BFS()
 	Qs.push(sS);
 	g_Check.emplace(sS, sS);
 
+    int TimeTest = 0;
+    for(int i = 0; i < 10000; ++i)
+        ++TimeTest;
+    
 	int iCount = 1;
 	while (!Qs.empty())
 	{
@@ -73,7 +70,6 @@ int BFS()
 
 		for (int t = 0; t < iSize; ++t)
 		{
-
 			string sCur = Qs.front();
 			Qs.pop();
 
@@ -102,7 +98,6 @@ int BFS()
 				if (sTemp == "123456780")
 					return iCount;
 
-
 				Qs.push(sTemp);
 
 				g_M[inX][inY] = g_M[ZPos.first][ZPos.second];
@@ -124,12 +119,8 @@ int main()
 	cin.tie(NULL);
 
 	for (int i = 0; i < 3; ++i)
-	{
 		for (int j = 0; j < 3; ++j)
-		{
 			cin >> g_M[i][j];
-		}
-	}
 
 	string sS;
 	MtoS(sS);
@@ -141,6 +132,9 @@ int main()
 
 	g_Ans = BFS();
 	cout << g_Ans;
-
+    
+    
+    
+    
 	return 0;
 }
