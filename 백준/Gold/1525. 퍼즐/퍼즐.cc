@@ -5,7 +5,7 @@
 
 using namespace std;
 
-int g_M[3][3] = { 0 };
+int g_M[100][100] = { 0 };
 map<string, string> g_Check;
 int g_DirX[] = { 0, 0, -1, 1 };
 int g_DirY[] = { 1, -1, 0, 0 };
@@ -60,7 +60,7 @@ int BFS()
 	g_Check.emplace(sS, sS);
 
     int TimeTest = 0;
-    for(int i = 0; i < 10000; ++i)
+    for(int i = 0; i < 100000000; ++i)
         ++TimeTest;
     
 	int iCount = 1;
