@@ -1,11 +1,6 @@
 #include <iostream>
 #include <vector>
-#include <list>
-#include <string>
 #include <queue>
-#include <algorithm>
-#include "limits.h"
-
 using namespace std;
 
 class Func
@@ -22,7 +17,6 @@ int main()
 	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
 
-	// 나보다 바로 제일 큰 인덱스를 구해야한다
 	int N;
 	cin >> N;
 
@@ -34,6 +28,14 @@ int main()
 		Inputs.push_back(iTemp);
 	}
 
+    int TimeTest = 0;
+    int Temp[100000] = {0};
+    for(int i = 0; i < 100000000; ++i)
+    {
+        TimeTest++;
+        Temp[1] = TimeTest;
+    }
+    
 
 	priority_queue<pair<int ,int>, vector<pair<int ,int>>, Func> Qs;
 	for (int i = N - 1; i >= 0; --i)
@@ -47,18 +49,14 @@ int main()
 				Anss[Top.second] = i + 1;
 			}
 			else
-			{
 				break;
-			}
 		}
 		
 		Qs.push({ Inputs[i], i });
 	}
 
 	for (int i = 0; i < N; ++i)
-	{
 		cout << Anss[i] << " ";
-	}
 
 	return 0;
 }
