@@ -173,6 +173,13 @@ int BFS(pair<int, int> StartPos, pair<int, int> EndPos)
 int solution(vector<vector<int>> rectangle, int characterX, int characterY, int itemX, int itemY) {
 	int answer = 0;
 
+    
+    int Temp;
+    for(int i = 0; i < 1000000; ++i)
+    {
+        Temp += i;
+    }
+    
 	for (int i = 0; i < rectangle.size(); ++i)
 	{
 		Fill({ rectangle[i][0] * 2, rectangle[i][1] * 2 }, { rectangle[i][2] * 2, rectangle[i][3] * 2 });
