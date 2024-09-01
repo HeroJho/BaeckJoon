@@ -9,21 +9,6 @@
 
 using namespace std;
 
-//void Reset()
-//{
-//	for (int i = 1; i <= g_N; ++i)
-//	{
-//		g_Inputs[i] = 0;
-//		g_Check[i] = 0;
-//	}
-//}
-//void ResetVisited()
-//{
-//	for (int i = 1; i <= g_N; ++i)
-//	{
-//		g_Visited[i] = false;
-//	}
-//}
 
 void Pro()
 {
@@ -130,7 +115,6 @@ int main()
 	ios::sync_with_stdio(false);
 	cin.tie(0); cout.tie(0);
 
-
 	int T;
 	cin >> T;
 
@@ -138,8 +122,6 @@ int main()
 	{
 		Pro();
 	}
-
-
 
 	return 0;
 }
