@@ -5,28 +5,48 @@
 
 using namespace std;
 
-long long Solution(int M, vector<int>& Times) 
-{
-    long long Ans = 0;
 
+int main()
+{
+    ios::sync_with_stdio(false);
+    cin.tie(NULL); cout.tie(NULL);
+
+    int TimeTest[100000];
+    for(int i = 0; i < 100000; ++i)
+    {
+        TimeTest[i] = i;
+    }
+    
+
+    int N, M;
+    cin >> N >> M;
+    vector<int> Times;
+    for (int i = 0; i < N; ++i)
+    {
+        int Temp;
+        cin >> Temp;
+        Times.push_back(Temp);
+    }
+
+  
     sort(Times.begin(), Times.end());
+
+    long long Ans = 0;
 
     long long Left = Times[0];
     long long Right = M * (long long)Times.back();
 
-    
-    
-    // 최대값과 최소값이 바뀌는 구간이 가장 최소 시간이다.
     while (Left <= Right)
     {
         long long Mid = (Right + Left) / 2;
         long long TempM = 0;
 
-        // 현재 시간 기준으로 심사위원들이
-        // 몇명을 처리하는지 확인하는 부분
-        for (int i = 0; i < Times.size(); ++i) 
+        // 현재 시간 기준으로 심사위원들이 몇명을 처리하는지 확인
+        for (int i = 0; i < Times.size(); ++i)
         {
             TempM += (Mid / (long long)Times[i]);
+
+            // 오버플로 방지
             if (M < TempM)
                 break;
         }
@@ -45,28 +65,7 @@ long long Solution(int M, vector<int>& Times)
 
     }
 
-    return Ans;
-}
-
-
-int main()
-{
-    ios::sync_with_stdio(false);
-    cin.tie(NULL); cout.tie(NULL);
-
-
-    int N, M;
-    cin >> N >> M;
-    vector<int> Times;
-    for (int i = 0; i < N; ++i)
-    {
-        int Temp;
-        cin >> Temp;
-        Times.push_back(Temp);
-    }
-
-    cout << Solution(M, Times);
-
+    cout << Ans;
 
     return 0;
 }
