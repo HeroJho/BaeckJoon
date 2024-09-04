@@ -1,89 +1,43 @@
 #include <iostream>
-#include <vector>
-#include <climits>
 #include <list>
-#include <algorithm>
-
 using namespace std;
 
-int main()
+int main(void)
 {
-    ios::sync_with_stdio(false);
-    cin.tie(NULL); cout.tie(NULL);
+	ios::sync_with_stdio(0);
+	cin.tie(0); cout.tie(0);
 
-    int T;
-    cin >> T;
+	int T;
+	list<char> List;
+	list<char>::iterator t;
 
+	string L;
+	cin >> T;
 
-    while (T--)
-    {
-        string Input;
-        cin >> Input;
+	for (int i = 0; i < T; i++) 
+	{
+		cin >> L;
 
-        list<char> Ans;
-        list<char>::iterator Cur = Ans.begin();
-        for (int i = 0; i < Input.size(); ++i)
-        {
-            if (Input[i] == '<')
-            {
-                // 없다면, 맨 앞이라면
-                if (Ans.empty() || Cur == Ans.begin())
-                    continue;
+		List.clear();
+		t = List.begin();
 
-                --Cur;
+		for (int j = 0; j < L.length(); j++) 
+		{
+			if (L[j] == '<' && t != List.begin()) 
+				t--;
+			else if (L[j] == '>' && t != List.end()) 
+				t++;
+			else if (L[j] == '-' && t != List.begin()) 
+				t = List.erase(--t);
+			else if (L[j] != '<' && L[j] != '>' && L[j] != '-') 
+				List.insert(t, L[j]);
+		}
 
-            }
-            else if (Input[i] == '>')
-            {
-                // 없다면, 맨 뒤 라면
-                if (Ans.empty() || Cur == Ans.end())
-                    continue;
+		for (t = List.begin(); t != List.end(); t++)
+			cout << *t;
 
-                ++Cur;
+		cout << '\n';
+	}
 
-            }
-            else if (Input[i] == '-')
-            {
-                if (Ans.empty())
-                    continue;
-
-                if (Cur == Ans.begin())
-                    continue;
-
-                if (Cur == Ans.end())
-                {
-                    Ans.pop_back();
-                    Cur = Ans.end();
-                    continue;
-                }
-
-                // 앞을 지운다
-                // 뒤를 가리키는 뜻
-                --Cur;
-                Cur = Ans.erase(Cur);
-            }
-            else
-            {
-                // 앞에 추가하고 원래걸 가리킨다
-                // 앞에 추가하고 
-                Cur = Ans.insert(Cur, Input[i]);
-                ++Cur;
-            }
-
-        }
-
-        for (list<char>::iterator iter = Ans.begin(); iter != Ans.end(); ++iter)
-        {
-            if (*iter == '*')
-                continue;
-            cout << *iter;
-        }
-        cout << '\n';
-    }
-
- 
-
-
-
-    return 0;
+	return 0;
 }
