@@ -1,78 +1,117 @@
 #include <iostream>
 #include <vector>
+#include <climits>
+#include <algorithm>
 #include <queue>
-#include <limits.h>
 
 using namespace std;
 
+struct Data
+{
+    int A, B, C;
+};
+
+
 int N;
-int DP[61][61][61] = { INT_MAX };
-int Ans = INT_MAX;
+int Input[3] = { 0 };
+bool Visited[61][61][61] = { false };
 
-void  Reset()
+
+void BFS()
 {
-    for (int i = 0; i < 61; ++i)
+    queue<Data> Qs;
+    Qs.push({ Input[0],Input[1],Input[2] });
+
+
+    int Cnt = 0;
+    while (!Qs.empty())
     {
-        for (int j = 0; j < 61; ++j)
+        int Size = Qs.size();
+
+        for (int s = 0; s < Size; ++s)
         {
-            for (int k = 0; k < 61; ++k)
+            Data Cur = Qs.front();
+            Qs.pop();
+
+            if (Cur.A < 0)
+                Cur.A = 0;
+            if (Cur.B < 0)
+                Cur.B = 0;
+            if (Cur.C < 0)
+                Cur.C = 0;
+
+            if (Cur.A == 0 && Cur.B == 0 && Cur.C == 0)
             {
-                DP[i][j][k] = INT_MAX;
+                cout << Cnt;
+                return;
             }
+
+            if (Visited[Cur.A][Cur.B][Cur.C])
+                continue;
+            Visited[Cur.A][Cur.B][Cur.C] = true;
+
+            Data Nex;
+            Nex.A = Cur.A - 9;
+            Nex.B = Cur.B - 3;
+            Nex.C = Cur.C - 1;
+            Qs.push(Nex);
+
+            Nex.A = Cur.A - 9;
+            Nex.B = Cur.B - 1;
+            Nex.C = Cur.C - 3;
+            Qs.push(Nex);
+
+            Nex.A = Cur.A - 3;
+            Nex.B = Cur.B - 9;
+            Nex.C = Cur.C - 1;
+            Qs.push(Nex);
+
+            Nex.A = Cur.A - 3;
+            Nex.B = Cur.B - 1;
+            Nex.C = Cur.C - 9;
+            Qs.push(Nex);
+
+            Nex.A = Cur.A - 1;
+            Nex.B = Cur.B - 3;
+            Nex.C = Cur.C - 9;
+            Qs.push(Nex);
+
+            Nex.A = Cur.A - 1;
+            Nex.B = Cur.B - 9;
+            Nex.C = Cur.C - 3;
+            Qs.push(Nex);
+
+
+
         }
-    }
-}
 
-void DFS(int One, int Two, int Three, int Count)
-{
-    if (One < 0)
-        One = 0;
-    if (Two < 0)
-        Two = 0;
-    if (Three < 0)
-        Three = 0;
+        ++Cnt;
 
-    // 이미 해당 상태를 만들기 위해 더 낮게 한 적이 있다
-    if (DP[One][Two][Three] <= Count)
-        return;
-    DP[One][Two][Three] = Count;
-
-    if (One == 0 && Two == 0 && Three == 0)
-    {
-        if (Ans > Count)
-            Ans = Count;
-        return;
     }
 
-
-    DFS(One - 9, Two - 3, Three - 1, Count + 1);
-    DFS(One - 9, Two - 1, Three - 3, Count + 1);
-
-    DFS(One - 3, Two - 9, Three - 1, Count + 1);
-    DFS(One - 1, Two - 9, Three - 3, Count + 1);
-
-    DFS(One - 3, Two - 1, Three - 9, Count + 1);
-    DFS(One - 1, Two - 3, Three - 9, Count + 1);
-
+    cout << Cnt;
 }
+
 
 int main()
 {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
+    ios::sync_with_stdio(false);
+    cin.tie(NULL); cout.tie(NULL);
 
     cin >> N;
-    int Temp[3] = { 0 };
     for (int i = 0; i < N; ++i)
     {
-        cin >> Temp[i];
+        cin >> Input[i];
     }
 
-    Reset();
+    BFS();
 
-    DFS(Temp[0], Temp[1], Temp[2], 0);
-
-    cout << Ans;
+    // 931
+    // 913
+    // 391
+    // 319
+    // 193
+    // 139
 
     return 0;
 }
