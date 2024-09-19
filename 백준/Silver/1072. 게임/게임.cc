@@ -22,7 +22,7 @@ int main()
 
     long long Ans = 0;
 
-    long long Left = 1, Right = 1000000000;
+    long long Left = 1, Right = X;
     while (Left <= Right)
     {
         long long Mid = (Left + Right) / 2;
