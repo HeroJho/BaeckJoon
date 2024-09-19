@@ -16,7 +16,7 @@ int main()
     long long X, Y;
     cin >> X >> Y;
 
-    long long Z = (Y * 100 / double(X));
+    long long Z = 100.0 * Y / X;
     
     if (Z >= 99)
     {
@@ -36,7 +36,7 @@ int main()
         nX = X + Mid;
         nY = Y + Mid;
 
-        long long nZ = (nY * 100 / double(nX));
+        long long nZ = 100.0 * nY / nX;
 
         // 작거나 같다면 높인다
         if (nZ <= Z)
