@@ -1,61 +1,63 @@
 #include <iostream>
 #include <vector>
+#include <climits>
+#include <algorithm>
 #include <queue>
 #include <string>
-#include <climits>
+#include <cmath>
 
 using namespace std;
 
+
 int main()
 {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
+    ios::sync_with_stdio(false);
+    cin.tie(NULL); cout.tie(NULL);
 
-    
-    int Num = 0;
-    cin >> Num;
-
+    string Input;
+    cin >> Input;
     int N;
     cin >> N;
-    bool Brok[10] = {false};
+    bool BreakNum[10] = {false};
     for (int i = 0; i < N; ++i)
     {
-        int Temp;
-        cin >> Temp;
-        Brok[Temp] = true;
+        int C;
+        cin >> C;
+        BreakNum[C] = true;
     }
 
-  
-    // 100 부터 했을 경우
-    int ButtonCnt = abs(100 - Num);
-
-    // 제일 차가 작은 수
+    int MinDis = INT_MAX;
+    int DestNum = stoi(Input);
     for (int i = 0; i < 1000001; ++i)
     {
-        string sNum = to_string(i);
-        bool DoesMake = true;
-        for (int s = 0; s < sNum.length(); ++s)
+        string S = to_string(i);
+        bool Can = true;
+        for (int s = 0; s < S.length(); ++s)
         {
-            int iNum = sNum[s] - '0';
-            if (Brok[iNum])
+            int Num = S[s] - '0';
+            if (BreakNum[Num])
             {
-                DoesMake = false;
+                Can = false;
                 break;
             }
+
         }
 
+        if (!Can)
+            continue;
+
         // 만들 수 있는 숫자
-        if (DoesMake)
-        {
-            int TotalCnt = sNum.length() + abs(Num - i);
-            if (TotalCnt < ButtonCnt)
-                ButtonCnt = TotalCnt;
-        }
+        int Min = abs(i - DestNum) + S.length();
+        if (Min < MinDis)
+            MinDis = Min;
     }
 
 
-    cout << ButtonCnt;
-    
+    int Min = abs(100 - DestNum);
+    if (Min < MinDis)
+        MinDis = Min;
+
+    cout << MinDis;
 
     return 0;
 }
