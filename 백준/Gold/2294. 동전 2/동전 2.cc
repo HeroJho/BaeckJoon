@@ -1,71 +1,64 @@
 #include <iostream>
 #include <vector>
-#include <climits>
 #include <cmath>
+#include <climits>
 
 using namespace std;
 
-int N, K;
-vector<int> Inputs;
-int DP[101][10001];
+int DP[100][10001] = { 0 };
 
 int main()
 {
     ios::sync_with_stdio(false);
     cin.tie(NULL); cout.tie(NULL);
 
-    cin >> N >> K;
+    int N, M;
+    cin >> N >> M;
+
+    vector<int> Inputs;
     for (int i = 0; i < N; ++i)
     {
         int Temp;
         cin >> Temp;
         Inputs.push_back(Temp);
+
     }
 
-    // 초기화
-    for (int i = 0; i <= N; ++i)
+    for (int i = 0; i < N; ++i)
     {
-        for (int j = 0; j <= K; ++j)
+        for (int m = 0; m <= M; ++m)
         {
-            DP[i][j] = (j == 0) ? 0 : INT_MAX;
+            DP[i][m] = INT_MAX;
+            DP[i][0] = 0;
         }
     }
 
-    // 첫 번째 동전 사용 초기화
-    for (int k = 1; k <= K; ++k)
+
+    // 2 15
+    // 5 12
+    for (int m = 0; m <= M; ++m)
     {
-        if (k % Inputs[0] == 0)
+        if(m % Inputs[0] == 0)
+            DP[0][m] = m / Inputs[0];
+    }
+
+
+
+    for (int i = 1; i < N; ++i)
+    {
+        for (int m = 0; m <= M; ++m)
         {
-            DP[1][k] = k / Inputs[0];
+            if (m - Inputs[i] >= 0 && DP[i][m - Inputs[i]] != INT_MAX)
+                DP[i][m] = min(DP[i - 1][m], DP[i][m - Inputs[i]] + 1);
+            else
+                DP[i][m] = DP[i - 1][m];
         }
     }
 
-    // 동적 계획법 채우기
-    for (int n = 2; n <= N; ++n)
-    {
-        for (int k = 1; k <= K; ++k)
-        {
-            if (k - Inputs[n - 1] >= 0)
-            {
-                if (DP[n][k - Inputs[n - 1]] != INT_MAX)
-                {
-                    DP[n][k] = min(DP[n][k], DP[n][k - Inputs[n - 1]] + 1);
-                }
-
-                if (DP[n-1][k - Inputs[n - 1]] != INT_MAX)
-                {
-                    DP[n][k] = min(DP[n][k], DP[n - 1][k - Inputs[n - 1]] + 1);
-                }
-            }
-            DP[n][k] = min(DP[n][k], DP[n - 1][k]);
-        }
-    }
-
-    // 결과 출력
-    if (DP[N][K] == INT_MAX)
+    if (DP[N - 1][M] == INT_MAX)
         cout << -1;
     else
-        cout << DP[N][K];
+        cout << DP[N - 1][M];
 
     return 0;
 }
