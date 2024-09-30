@@ -1,71 +1,73 @@
 #include <iostream>
 #include <vector>
-#include <queue>
 #include <algorithm>
-#include <set>
-#include "limits.h"
+#include <queue>
 
 using namespace std;
+
 
 class Func
 {
 public:
-	bool operator()(pair<int, int> L, pair<int, int> R)
-	{
-		return L.second < R.second;
-	}
+    bool operator()(pair<int, int> L, pair<int, int> R)
+    {
+        return L.second > R.second;
+    }
 };
+
+
 
 int main()
 {
-	ios::sync_with_stdio(false);
-	cin.tie(0); cout.tie(0);
+    ios::sync_with_stdio(false);
+    cin.tie(NULL); cout.tie(NULL);
 
-	int N;
-	cin >> N;
-	vector<pair<int, int>> Inputs;
-	for (int i = 0; i < N; ++i)
-	{
-		pair<int, int> Temp;
-		cin >> Temp.first >> Temp.second;
-		Inputs.push_back(Temp);
-	}
+    int N;
+    cin >> N;
 
-	if (N == 0)
-	{
-		cout << 0;
-		return 0;
-	}
+    if (N == 0)
+    {
+        cout << 0;
+        return 0;
+    }
+    
+    vector<pair<int ,int>> Inputs;
+    for (int i = 0; i < N; ++i)
+    {
+        int P, D;
+        cin >> P >> D;
+        Inputs.push_back({P, D});
+    }
 
-	sort(Inputs.begin(), Inputs.end(), Func());
+    sort(Inputs.begin(), Inputs.end(), Func());
 
-	int Ans = 0;
+    int Ans = 0;
 
-	int Day = Inputs.back().second;
-	priority_queue<int> Qs;
+    priority_queue<int> Qs;
+    int Index = 0;
+    int Day = Inputs[0].second;
+    while (Day)
+    {
+        // Day에 맞는 넣는다
+        while (Index < Inputs.size() && 
+            Day == Inputs[Index].second)
+        {
+            Qs.push(Inputs[Index].first);
+            ++Index;
+        }
 
-	while (Day > 0)
-	{
-		while (!Inputs.empty())
-		{
-			if (Day > Inputs.back().second)
-				break;
+        if (!Qs.empty())
+        {
+            Ans += Qs.top();
+            Qs.pop();
+        }
 
-			Qs.push(Inputs.back().first);
-			Inputs.pop_back();
-		}
-		
-		// 확인한다
-		if (!Qs.empty())
-		{
-			Ans += Qs.top();
-			Qs.pop();
-		}
+        --Day;
 
-		--Day;
-	}
+    }
 
-	cout << Ans;
+    cout << Ans;
 
-	return 0;
+
+    return 0;
 }
