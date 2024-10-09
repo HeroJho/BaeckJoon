@@ -1,9 +1,6 @@
 #include <iostream>
 #include <vector>
-#include <queue>
 #include <algorithm>
-#include <set>
-#include "limits.h"
 
 using namespace std;
 
@@ -17,13 +14,9 @@ bool BinCheck(const vector<int>& Inputs, int CheckIndex)
 	while (true)
 	{
 		if (Right == CheckIndex)
-		{
 			--Right;
-		}
 		else if (Left == CheckIndex)
-		{
 			++Left;
-		}
 
 		if (Left >= Right)
 			break;
@@ -31,17 +24,11 @@ bool BinCheck(const vector<int>& Inputs, int CheckIndex)
 		int Sum = Inputs[Left] + Inputs[Right];
 
 		if (CheckSum < Sum)
-		{
 			--Right;
-		}
 		else if (CheckSum > Sum)
-		{
 			++Left;
-		}
 		else
-		{
 			return true;
-		}
 
 	}
 
@@ -65,10 +52,8 @@ int main()
 	sort(Inputs.begin(), Inputs.end());
 
 	int Ans = 0;
-	for (int i = 0; i < N; ++i)
-	{
-		Ans += BinCheck(Inputs, i);
-	}
+	for (int i = 0; i < N; ++i) // N
+		Ans += BinCheck(Inputs, i); // N
 
 	cout << Ans;
 
