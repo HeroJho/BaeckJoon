@@ -1,66 +1,72 @@
 #include <iostream>
 #include <vector>
-#include <climits>
+#include <queue>
 #include <algorithm>
+
 
 using namespace std;
 
 
+
+int N, C;
+vector<int> Inputs;
+
+
+
+int Go(int Dis)
+{
+	int Cnt = 1;
+	int Pre = Inputs[0];
+	for (int i = 1; i < Inputs.size(); ++i)
+	{
+		if (Inputs[i] - Pre >= Dis)
+		{
+			Pre = Inputs[i];
+			++Cnt;
+		}
+	}
+
+	return Cnt;
+}
+
+
 int main()
 {
-    ios::sync_with_stdio(false);
-    cin.tie(NULL); cout.tie(NULL);
+	ios::sync_with_stdio(false);
+	cin.tie(0); cout.tie(0);
 
-    // i 거리로 설치가 다 되면 크게해서 확인
-    // 설치가 안 된다면 작게해서 확인
+	cin >> N >> C;
+	for (int i = 0; i < N; ++i)
+	{
+		int Temp;
+		cin >> Temp;
+		Inputs.push_back(Temp);
+	}
 
+	sort(Inputs.begin(), Inputs.end());
 
-    int N, C;
-    cin >> N >> C;
-    vector<int> Inputs;
-    for (int i = 0; i < N; ++i)
-    {
-        int Temp;
-        cin >> Temp;
-        Inputs.push_back(Temp);
-    }
+	int Ans = 0;
+	int Left = 0, Right = Inputs.back() - Inputs.front();
+	while (Left <= Right)
+	{
+		int Mid = (Left + Right) / 2;
 
-    sort(Inputs.begin(), Inputs.end());
+		int Cnt = Go(Mid);
+		if (Cnt >= C)
+		{
+			Left = Mid + 1;
+			Ans = Mid;
+		}
+		else
+		{
+			Right = Mid - 1;
+		}
 
-    int Ans = 0;
+	}
 
-    int Left = 1, Right = Inputs.back() - Inputs.front();
-    while (Left <= Right)
-    {
-        int Middle = (Left + Right) / 2;
-
-        int Cnt = 1;
-        int PreIndex = 0;
-        for (int i = 1; i < Inputs.size(); ++i)
-        {
-            if (Middle <= Inputs[i] - Inputs[PreIndex])
-            {
-                ++Cnt;
-                PreIndex = i;
-            }
-        }
-
-        // 같거나 더 설치됐다
-        if (Cnt >= C)
-        {
-            Left = Middle + 1;
-            Ans = max(Ans, Middle);
-        }
-        // 덜 설치됐다
-        else if(Cnt < C)
-        {
-            Right = Middle - 1;
-        }
-
-    }
-
-    cout << Ans;
+	cout << Ans;
 
 
-    return 0;
+	return 0;
 }
+
