@@ -1,127 +1,72 @@
 #include <iostream>
-#include <vector>
 #include <queue>
-#include <algorithm>
-#include <set>
-#include "limits.h"
+#include <cstring>
 
 #define MAX 100001
 
 using namespace std;
 
+int T, N;
+int Graph[MAX];
+bool Visited[MAX];
+bool Done[MAX];
+int Cnt;
 
-void Pro()
+void DFS(int Node) 
 {
-	int N;
-	cin >> N;
-	vector<int> Inputs;
-	Inputs.push_back(0);
-	for (int i = 0; i < N; ++i)
+
+	Visited[Node] = true;
+	int Next = Graph[Node];
+
+	if (!Visited[Next])
 	{
-		int Temp;
-		cin >> Temp;
-		Inputs.push_back(Temp);
+		DFS(Next);
 	}
-
-
-	vector<int> Check(N + 1, false);
-	
-	for (int i = 1; i <= N; ++i)
+	else if (!Done[Next]) 
 	{
-		if (Check[i] != 0)
-			continue;
-
-		// 자신 바로 끝
-		if (i == Inputs[i])
-		{
-			Check[i] = 1;
-			continue;
-		}
-
-
-		vector<bool> Visited(N + 1, false);
-		vector<int> Teams;
-
-		int Nex = i;
-		Visited[Nex] = true;
-		Teams.push_back(Nex);
-
-		while (true)
-		{
-			Nex = Inputs[Nex];
-			// 거쳐서 아닌거 확정된 -1, 서클 1
-			if (Check[Nex] != 0)
-			{
-				for (int i = 0; i < Teams.size(); ++i)
-				{
-					Check[Teams[i]] = -1;
-				}
-				break;
-			}
-
-
-			// 서클 완성 = 전부 1
-			if (i == Nex)
-			{
-				for (int i = 0; i < Teams.size(); ++i)
-				{
-					Check[Teams[i]] = 1;
-				}
-
-				break;
-			}
-
-			// 거친 노드 도착
-			if (Visited[Nex])
-			{
-				// 거친 노드 이후로는 Check = 1;
-				// 이전은 Check - 1
-				bool bF = false;
-				for (int i = 0; i < Teams.size(); ++i)
-				{
-					if (Nex == Teams[i])
-						bF = true;
-
-					if(!bF)
-						Check[Teams[i]] = -1;
-					else
-						Check[Teams[i]] = 1;
-				}
-
-				break;
-			}
-				
-
-			Visited[Nex] = true;
-			Teams.push_back(Nex);
-		}
-
+		//방문은 했지만 아직 사이클이 아니라면 next까지 포함해서 사이클 완성
+		//자기 자신을 포함한 팀의 멤버를 카운트
+		for (int i = Next; i != Node; i = Graph[i])
+			Cnt++;
 		
+		Cnt++;
 	}
 
-	int Ans = 0;
-	for (int i = 1; i <= N; ++i)
-	{
-		if (Check[i] != 1)
-			++Ans;
-	}
+	Done[Node] = true;
 
-	cout << Ans << '\n';
 }
 
 
-int main()
+int main() 
 {
+
 	ios::sync_with_stdio(false);
-	cin.tie(0); cout.tie(0);
+	cin.tie(NULL); cout.tie(NULL);
 
-	int T;
+
 	cin >> T;
-
-	while (T--)
+	while (T--) 
 	{
-		Pro();
+		cin >> N;
+		for (int i = 1; i <= N; ++i) 
+		{
+			cin >> Graph[i];
+		}
+
+		for (int i = 1; i <= N; ++i) 
+		{
+			if (!Visited[i])
+				DFS(i);
+			
+		}
+
+		cout << N - Cnt << '\n';
+
+		Cnt = 0;
+		memset(Visited, false, sizeof(Visited));
+		memset(Done, false, sizeof(Done));
 	}
+
 
 	return 0;
 }
