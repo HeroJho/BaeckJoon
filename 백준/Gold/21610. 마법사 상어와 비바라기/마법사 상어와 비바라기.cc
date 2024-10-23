@@ -27,33 +27,21 @@ bool IsIn(int X, int Y)
 // 명령어에 따라 구름 이동
 void MoveCloud(pair<int ,int> Order)
 {
-
     int Dir = Order.first;
     int Dis = Order.second;
 
     for (int i = 0; i < Clouds.size(); ++i)
     {
-        int nX = Clouds[i].first;
-        int nY = Clouds[i].second;
+        int nX = Clouds[i].first + Dis * DirX[Dir];
+        int nY = Clouds[i].second + Dis * DirY[Dir];
 
-        for (int d = 0; d < Dis; ++d)
-        {
-            nX += DirX[Dir];
-            nY += DirY[Dir];
+        nX %= N;
+        nY %= N;
+        if (nX < 0)
+            nX += N;
+        if (nY < 0)
+            nY += N;
 
-            if (nX < 0)
-                nX = N-1;
-            if (nX >= N)
-                nX = 0;
-
-            if (nY < 0)
-                nY = N - 1;
-            if (nY >= N)
-                nY = 0;
-        }
-
-
-        // 음수일 때
         Clouds[i].first = nX;
         Clouds[i].second = nY;
     }
