@@ -18,9 +18,11 @@ void Rotate(int Depth)
 {
     int CurX = Depth;
     int CurY = Depth;
+
+    // 시작 빼고
     int StartVal = Matrix[CurY][CurX];
 
-
+    // 돌리기
     for (int dir = 0; dir < 4; ++dir)
     {
         int nX = CurX;
@@ -33,7 +35,8 @@ void Rotate(int Depth)
 
             if (nX == Depth && nY == Depth)
             {
-                Matrix[Depth+1][Depth] = StartVal;
+                // 시작 넣어주기
+                Matrix[CurY][CurX] = StartVal;
                 return;
             }
 
@@ -57,24 +60,7 @@ void Go()
     for (int i = 0; i < Depth; ++i)
     {
         Rotate(i);
-
-
-        //cout << '\n';
-        //cout << '\n';
-        //for (int y = 0; y < Y; ++y)
-        //{
-        //    for (int x = 0; x < X; ++x)
-        //    {
-        //        cout << Matrix[y][x] << ' ';
-        //    }
-        //    cout << '\n';
-        //}
-        //cout << '\n';
-        //cout << '\n';
-
-
     }
-
 }
 
 
@@ -92,12 +78,10 @@ int main()
         }
     }
 
-
     for (int i = 0; i < R; ++i)
     {
         Go();
     }
-
 
     for (int y = 0; y < Y; ++y)
     {
@@ -107,8 +91,6 @@ int main()
         }
         cout << '\n';
     }
-
-
 
     return 0;
 }
