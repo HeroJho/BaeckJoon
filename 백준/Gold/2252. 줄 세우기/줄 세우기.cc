@@ -1,72 +1,57 @@
 #include <iostream>
-#include <algorithm>
-#include <string>
-#include <cstring>
-#include <cmath>
 #include <vector>
 #include <queue>
 
 using namespace std;
 
 int N, M;
-vector<int> InDegree, Result;
-vector<vector<int>> Graph;
+vector<int> Matrix[32002];
+int InNode[32002] = { 0 };
 
-void TopologySort()
-{
-    queue<int> Q;
-
-    for (int i = 1; i <= N; i++)
-    {
-        if (InDegree[i] == 0)
-            Q.push(i);
-    }
-
-    for (int i = 0; i < N; i++)
-    {
-        if (Q.empty())
-            return;
-
-        int Cur = Q.front();
-        Result[i] = Cur;
-        Q.pop();
-
-        for (int k = 0; k < Graph[Cur].size(); k++)
-        {
-            int Next = Graph[Cur][k];
-            if (--InDegree[Next] == 0)
-                Q.push(Next);
-        }
-    }
-}
+vector<int> Ans;
 
 int main()
 {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    cout.tie(nullptr);
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
 
     cin >> N >> M;
-    InDegree.assign(N + 1, 0);
-    Result.assign(N + 1, 0);
-    Graph.assign(N + 1, vector<int>(0, 0));
-
-    for (int i = 0; i < M; i++)
+    for (int i = 0; i < M; ++i)
     {
-        int A, B;
-        cin >> A >> B;
-        Graph[A].emplace_back(B);
-        InDegree[B]++;
+        int Start, End;
+        cin >> Start >> End;
+        Matrix[Start].push_back(End);
+        ++InNode[End];
     }
 
-
-    TopologySort();
-
-
-
-    for (int i = 0; i < N; i++)
+    queue<int> Qs;
+    // 진입차수가 0인 정점을 모두 넣는다
+    for (int i = 1; i <= N; ++i)
     {
-        cout << Result[i] << " ";
+        if (InNode[i] == 0)
+            Qs.push(i);
+    }
+
+    while (!Qs.empty())
+    {
+        int Cur = Qs.front();
+        Qs.pop();
+
+        Ans.push_back(Cur);
+
+        for (int i = 0; i < Matrix[Cur].size(); ++i)
+        {
+            int Next = Matrix[Cur][i];
+            --InNode[Next];
+            if (InNode[Next] == 0)
+                Qs.push(Next);
+        }
+
+    }
+
+    for (int i = 0; i < Ans.size(); ++i)
+    {
+        cout << Ans[i] << ' ';
     }
 
     return 0;
